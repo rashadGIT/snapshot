@@ -1,0 +1,181 @@
+// Snapspot Database Schema
+// Mobile-first Uber-style content capture platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User accounts authenticated via Cognito
+model User {
+  id                   String    @id @default(uuid())
+  cognitoSub           String    @unique // Cognito user ID
+  email                String    @unique
+  name                 String?
+  role                 UserRole? // Null until onboarding complete
+  authProvider         String    @default("google") // cognito-federated-google
+  verificationStatus   String    @default("unverified")
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  // Relations
+  jobsCreated          Job[]        @relation("RequesterJobs")
+  assignments          Assignment[]
+  messagesCreated      Message[]
+  uploads              Upload[]
+  ratingsGiven         Rating[]     @relation("RatingsGiven")
+  ratingsReceived      Rating[]     @relation("RatingsReceived")
+
+  @@index([cognitoSub])
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  REQUESTER
+  HELPER
+}
+
+// Content capture jobs
+model Job {
+  id                String      @id @default(uuid())
+  requesterId       String
+  status            JobStatus   @default(OPEN)
+
+  // Job details
+  title             String
+  description       String
+  location          String      // Text-based location (no GPS in Phase 1)
+  eventTime         DateTime
+  contentType       String      // "photos", "videos", "both"
+  notes             String?
+  priceTier         String      // "basic", "standard", "premium" (UI only, no real payments)
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  completedAt       DateTime?
+  cancelledAt       DateTime?
+
+  // Relations
+  requester         User        @relation("RequesterJobs", fields: [requesterId], references: [id], onDelete: Cascade)
+  assignments       Assignment[]
+  messages          Message[]
+  uploads           Upload[]
+  ratings           Rating[]
+  qrTokens          QRToken[]
+
+  @@index([requesterId])
+  @@index([status])
+  @@index([eventTime])
+  @@map("jobs")
+}
+
+enum JobStatus {
+  OPEN        // Created, awaiting Helper
+  ACCEPTED    // Helper joined
+  IN_PROGRESS // Helper is capturing content
+  UPLOADED    // Helper finished uploading
+  COMPLETED   // Requester marked complete
+  CANCELLED   // Job cancelled
+}
+
+// QR code tokens for job joining
+model QRToken {
+  id            String    @id @default(uuid())
+  jobId         String
+  token         String    @unique // Short-lived random token
+  shortCode     String    @unique // 6-digit backup code
+
+  generatedAt   DateTime  @default(now())
+  expiresAt     DateTime  // 15-minute expiry
+  scannedAt     DateTime?
+  scannedBy     String?   // Helper user ID
+  isUsed        Boolean   @default(false)
+
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([shortCode])
+  @@index([jobId])
+  @@map("qr_tokens")
+}
+
+// Helper assignment to a job (1:1 in Phase 1)
+model Assignment {
+  id            String    @id @default(uuid())
+  jobId         String    @unique // One Helper per job in Phase 1
+  helperId      String
+
+  joinedAt      DateTime  @default(now())
+  leftAt        DateTime?
+
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  helper        User      @relation(fields: [helperId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([helperId])
+  @@map("assignments")
+}
+
+// Simple append-only messaging thread per job
+model Message {
+  id            String    @id @default(uuid())
+  jobId         String
+  userId        String
+  content       String
+  createdAt     DateTime  @default(now())
+
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, createdAt])
+  @@map("messages")
+}
+
+// Uploaded media files
+model Upload {
+  id            String    @id @default(uuid())
+  jobId         String
+  uploadedBy    String
+
+  s3Key         String    // jobId/uuid-filename
+  s3Bucket      String
+  fileName      String    // Original filename (sanitized)
+  fileType      String    // MIME type
+  fileSize      Int       // Bytes
+
+  uploadedAt    DateTime  @default(now())
+
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  uploader      User      @relation(fields: [uploadedBy], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([uploadedBy])
+  @@map("uploads")
+}
+
+// Ratings (bi-directional: Requester ↔ Helper)
+model Rating {
+  id            String    @id @default(uuid())
+  jobId         String
+  fromUserId    String
+  toUserId      String
+
+  score         Int       // 1-5 stars
+  comment       String?
+
+  createdAt     DateTime  @default(now())
+
+  job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fromUser      User      @relation("RatingsGiven", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser        User      @relation("RatingsReceived", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, fromUserId]) // Each user can rate once per job
+  @@index([jobId])
+  @@index([toUserId])
+  @@map("ratings")
+}

@@ -1,0 +1,46 @@
+version: '3.9'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine
+    container_name: snapspot-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: snapspot
+      POSTGRES_PASSWORD: snapspot_dev_password
+      POSTGRES_DB: snapspot_dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U snapspot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LocalStack for S3 emulation
+  localstack:
+    image: localstack/localstack:latest
+    container_name: snapspot-localstack
+    restart: unless-stopped
+    ports:
+      - "4566:4566"
+    environment:
+      SERVICES: s3
+      DEBUG: 0
+      DATA_DIR: /tmp/localstack/data
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - localstack_data:/tmp/localstack
+      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/init-s3.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  localstack_data:
