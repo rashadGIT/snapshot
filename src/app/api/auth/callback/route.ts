@@ -79,6 +79,16 @@ export async function GET(request: NextRequest) {
     // Clear PKCE verifier
     cookieStore.delete('pkce_verifier');
 
+    // Check if there's a pending join token (from QR scan)
+    const pendingJoinToken = cookieStore.get('pending_join_token')?.value;
+
+    if (pendingJoinToken) {
+      // Clear the pending token
+      cookieStore.delete('pending_join_token');
+      // Redirect back to join flow
+      return NextResponse.redirect(`${APP_URL}/join/${pendingJoinToken}`);
+    }
+
     // Redirect based on role
     if (!user.role) {
       // No role set - redirect to onboarding

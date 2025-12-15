@@ -25,6 +25,8 @@ const s3Client = new S3Client({
     endpoint: AWS_ENDPOINT_URL,
     forcePathStyle: true, // Required for LocalStack
   }),
+  // Disable checksum validation for LocalStack compatibility
+  requestChecksumCalculation: 'WHEN_REQUIRED',
 });
 
 /**
@@ -79,10 +81,16 @@ export async function generatePresignedUploadUrl(
       jobId,
       uploadedAt: new Date().toISOString(),
     },
+    // Disable checksum for LocalStack compatibility
+    ChecksumAlgorithm: undefined,
   });
 
   // Generate pre-signed URL valid for 15 minutes
-  const url = await getSignedUrl(s3Client, command, { expiresIn: 900 });
+  const url = await getSignedUrl(s3Client, command, {
+    expiresIn: 900,
+    // Don't sign checksum headers for LocalStack
+    unhoistableHeaders: new Set(['x-amz-checksum-crc32', 'x-amz-sdk-checksum-algorithm']),
+  });
 
   return {
     url,

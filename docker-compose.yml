@@ -22,24 +22,17 @@ services:
 
   # LocalStack for S3 emulation
   localstack:
-    image: localstack/localstack:latest
+    image: localstack/localstack:3.0
     container_name: snapspot-localstack
-    restart: unless-stopped
     ports:
       - "4566:4566"
     environment:
-      SERVICES: s3
-      DEBUG: 0
-      DATA_DIR: /tmp/localstack/data
-      AWS_DEFAULT_REGION: us-east-1
+      - SERVICES=s3
+      - DEBUG=1
+      - AWS_DEFAULT_REGION=us-east-1
+      - DISABLE_CORS_CHECKS=1
     volumes:
-      - localstack_data:/tmp/localstack
-      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/init-s3.sh
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - localstack_data:/var/lib/localstack
 
 volumes:
   postgres_data:

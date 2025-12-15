@@ -26,12 +26,18 @@ export default function CreateJobPage() {
     setLoading(true);
 
     try {
+      // Convert datetime-local format to ISO string
+      const submitData = {
+        ...formData,
+        eventTime: new Date(formData.eventTime).toISOString(),
+      };
+
       const response = await fetch('/api/jobs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       if (response.ok) {

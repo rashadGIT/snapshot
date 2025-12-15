@@ -113,7 +113,12 @@ export default function DashboardPage() {
             </button>
           )}
           {user.role === 'HELPER' && (
-            <button className="btn btn-gold">Scan QR Code</button>
+            <button
+              onClick={() => router.push('/jobs/join')}
+              className="btn btn-gold"
+            >
+              Scan QR Code
+            </button>
           )}
         </div>
 
@@ -145,7 +150,11 @@ export default function DashboardPage() {
         ) : (
           <div className="grid gap-4">
             {jobs.map((job) => (
-              <div key={job.id} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div
+                key={job.id}
+                onClick={() => router.push(`/jobs/${job.id}`)}
+                className="card hover:shadow-lg transition-shadow cursor-pointer"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
