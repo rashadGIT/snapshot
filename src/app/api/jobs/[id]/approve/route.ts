@@ -1,6 +1,6 @@
 /**
- * Submit Job for Review API
- * POST /api/jobs/[id]/submit - Helper submits completed job
+ * Approve Job API
+ * POST /api/jobs/[id]/approve - Requester approves completed job
  */
 
 import { NextRequest } from 'next/server';
@@ -23,7 +23,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const authRequest = await getAuthRequest(request);
-  const user = await requireRole(authRequest, ['HELPER']);
+  const user = await requireRole(authRequest, ['REQUESTER']);
 
   if (!user) {
     return unauthorizedResponse();
@@ -32,50 +32,40 @@ export async function POST(
   try {
     const jobId = params.id;
 
-    // Find job and verify Helper is assigned
+    // Find job and verify Requester owns it
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      include: {
-        assignments: true,
-        uploads: true,
-      },
     });
 
     if (!job) {
       return notFoundResponse('Job not found');
     }
 
-    // Verify Helper is assigned to this job
-    const isAssigned = job.assignments.some((a) => a.helperId === user.id);
-    if (!isAssigned) {
-      return unauthorizedResponse('Not assigned to this job');
+    // Verify Requester owns this job
+    if (job.requesterId !== user.id) {
+      return unauthorizedResponse('Not your job');
     }
 
-    // Verify job is in correct status (ACCEPTED or IN_PROGRESS)
-    if (job.status !== 'ACCEPTED' && job.status !== 'IN_PROGRESS') {
-      return badRequestResponse(`Cannot submit job in ${job.status} status`);
+    // Verify job is in IN_REVIEW status
+    if (job.status !== 'IN_REVIEW') {
+      return badRequestResponse(`Cannot approve job in ${job.status} status`);
     }
 
-    // Verify at least one upload exists
-    if (job.uploads.length === 0) {
-      return badRequestResponse('Cannot submit job without any uploads');
-    }
-
-    // Update job status to IN_REVIEW and set submittedAt timestamp
+    // Update job status to COMPLETED and set completedAt timestamp
     const updatedJob = await prisma.job.update({
       where: { id: jobId },
       data: {
-        status: 'IN_REVIEW',
-        submittedAt: new Date(),
+        status: 'COMPLETED',
+        completedAt: new Date(),
       },
     });
 
     return Response.json({
-      message: 'Job submitted for review',
+      message: 'Job approved',
       job: updatedJob,
     });
   } catch (error) {
-    console.error('Failed to submit job:', error);
+    console.error('Failed to approve job:', error);
     return serverErrorResponse();
   }
 }

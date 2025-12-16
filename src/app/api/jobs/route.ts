@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
   try {
     let jobs;
 
-    if (user.role === 'REQUESTER') {
+    if (user.activeRole === 'REQUESTER') {
       // Requesters see their own jobs
       jobs = await prisma.job.findMany({
         where: { requesterId: user.id },

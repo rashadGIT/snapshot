@@ -36,8 +36,8 @@ export default function JoinTokenPage() {
       const userData = await userResponse.json();
       const user = userData.user;
 
-      // Step 2: If user has no role, set to HELPER
-      if (!user.role) {
+      // Step 2: If user has no activeRole, set to HELPER
+      if (!user.activeRole) {
         setStatus('setting_role');
         const roleResponse = await fetch('/api/auth/me', {
           method: 'PATCH',

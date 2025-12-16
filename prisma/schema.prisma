@@ -12,15 +12,16 @@ datasource db {
 
 // User accounts authenticated via Cognito
 model User {
-  id                   String    @id @default(uuid())
-  cognitoSub           String    @unique // Cognito user ID
-  email                String    @unique
+  id                   String     @id @default(uuid())
+  cognitoSub           String     @unique // Cognito user ID
+  email                String     @unique
   name                 String?
-  role                 UserRole? // Null until onboarding complete
-  authProvider         String    @default("google") // cognito-federated-google
-  verificationStatus   String    @default("unverified")
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  roles                UserRole[] @default([]) // Can be both REQUESTER and HELPER
+  activeRole           UserRole?  // Currently active role (null until onboarding)
+  authProvider         String     @default("google") // cognito-federated-google
+  verificationStatus   String     @default("unverified")
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
 
   // Relations
   jobsCreated          Job[]        @relation("RequesterJobs")
@@ -57,7 +58,8 @@ model Job {
 
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
-  completedAt       DateTime?
+  submittedAt       DateTime?   // When Helper submitted for review
+  completedAt       DateTime?   // When Requester approved
   cancelledAt       DateTime?
 
   // Relations
@@ -78,8 +80,8 @@ enum JobStatus {
   OPEN        // Created, awaiting Helper
   ACCEPTED    // Helper joined
   IN_PROGRESS // Helper is capturing content
-  UPLOADED    // Helper finished uploading
-  COMPLETED   // Requester marked complete
+  IN_REVIEW   // Requester reviewing submitted content
+  COMPLETED   // Requester approved and finalized
   CANCELLED   // Job cancelled
 }
 
@@ -147,6 +149,7 @@ model Upload {
   fileName      String    // Original filename (sanitized)
   fileType      String    // MIME type
   fileSize      Int       // Bytes
+  thumbnailKey  String?   // S3 key for video thumbnail (optional)
 
   uploadedAt    DateTime  @default(now())
 

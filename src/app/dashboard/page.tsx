@@ -12,7 +12,8 @@ interface User {
   id: string;
   email: string;
   name: string | null;
-  role: 'REQUESTER' | 'HELPER' | null;
+  roles: ('REQUESTER' | 'HELPER')[];
+  activeRole: 'REQUESTER' | 'HELPER' | null;
 }
 
 interface Job {
@@ -64,6 +65,46 @@ export default function DashboardPage() {
     window.location.href = '/api/auth/logout';
   };
 
+  const switchRole = async (newRole: 'REQUESTER' | 'HELPER') => {
+    try {
+      const response = await fetch('/api/auth/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ activeRole: newRole }),
+      });
+
+      if (response.ok) {
+        // Reload dashboard with new role
+        await loadUserAndJobs();
+      } else {
+        alert('Failed to switch role');
+      }
+    } catch (error) {
+      console.error('Role switch failed:', error);
+      alert('Failed to switch role');
+    }
+  };
+
+  const addRole = async (role: 'REQUESTER' | 'HELPER') => {
+    try {
+      const response = await fetch('/api/auth/me', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role }),
+      });
+
+      if (response.ok) {
+        await loadUserAndJobs();
+        alert(`${role} role added! You can now switch to it.`);
+      } else {
+        alert('Failed to add role');
+      }
+    } catch (error) {
+      console.error('Add role failed:', error);
+      alert('Failed to add role');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -85,10 +126,46 @@ export default function DashboardPage() {
             <div>
               <h1 className="text-2xl font-bold">Snapspot</h1>
               <p className="text-sm text-gray-600">
-                {user.role === 'REQUESTER' ? 'Requester' : 'Helper'} Dashboard
+                {user.activeRole === 'REQUESTER' ? 'Requester' : 'Helper'} Dashboard
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              {/* Role Switcher */}
+              {user.roles.length > 1 && (
+                <div className="flex gap-2 bg-gray-100 rounded-lg p-1">
+                  <button
+                    onClick={() => switchRole('REQUESTER')}
+                    className={`px-3 py-1 rounded text-sm font-medium transition-all ${
+                      user.activeRole === 'REQUESTER'
+                        ? 'bg-white shadow-sm'
+                        : 'text-gray-600 hover:text-black'
+                    }`}
+                  >
+                    Requester
+                  </button>
+                  <button
+                    onClick={() => switchRole('HELPER')}
+                    className={`px-3 py-1 rounded text-sm font-medium transition-all ${
+                      user.activeRole === 'HELPER'
+                        ? 'bg-white shadow-sm'
+                        : 'text-gray-600 hover:text-black'
+                    }`}
+                  >
+                    Helper
+                  </button>
+                </div>
+              )}
+
+              {/* Add Other Role */}
+              {user.roles.length === 1 && (
+                <button
+                  onClick={() => addRole(user.activeRole === 'REQUESTER' ? 'HELPER' : 'REQUESTER')}
+                  className="text-sm text-gold hover:underline"
+                >
+                  + Become {user.activeRole === 'REQUESTER' ? 'Helper' : 'Requester'}
+                </button>
+              )}
+
               <span className="text-sm text-gray-600">{user.email}</span>
               <button onClick={handleLogout} className="btn btn-secondary text-sm">
                 Sign Out
@@ -102,9 +179,9 @@ export default function DashboardPage() {
       <div className="container-safe py-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">
-            {user.role === 'REQUESTER' ? 'My Jobs' : 'Available Jobs'}
+            {user.activeRole === 'REQUESTER' ? 'My Jobs' : 'Available Jobs'}
           </h2>
-          {user.role === 'REQUESTER' && (
+          {user.activeRole === 'REQUESTER' && (
             <button
               onClick={() => router.push('/jobs/create')}
               className="btn btn-primary"
@@ -112,7 +189,7 @@ export default function DashboardPage() {
               + Create Job
             </button>
           )}
-          {user.role === 'HELPER' && (
+          {user.activeRole === 'HELPER' && (
             <button
               onClick={() => router.push('/jobs/join')}
               className="btn btn-gold"

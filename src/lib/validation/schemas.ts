@@ -44,8 +44,8 @@ export function validateStatusTransition(
   const validTransitions: Record<JobStatus, JobStatus[]> = {
     [JobStatus.OPEN]: [JobStatus.ACCEPTED, JobStatus.CANCELLED],
     [JobStatus.ACCEPTED]: [JobStatus.IN_PROGRESS, JobStatus.CANCELLED],
-    [JobStatus.IN_PROGRESS]: [JobStatus.UPLOADED, JobStatus.CANCELLED],
-    [JobStatus.UPLOADED]: [JobStatus.COMPLETED, JobStatus.CANCELLED],
+    [JobStatus.IN_PROGRESS]: [JobStatus.IN_REVIEW, JobStatus.CANCELLED],
+    [JobStatus.IN_REVIEW]: [JobStatus.COMPLETED, JobStatus.CANCELLED],
     [JobStatus.COMPLETED]: [], // Terminal state
     [JobStatus.CANCELLED]: [], // Terminal state
   };
@@ -88,6 +88,7 @@ export const recordUploadSchema = z.object({
   fileName: z.string().min(1).max(255),
   fileType: z.string().min(1),
   fileSize: z.number().int().positive(),
+  thumbnailKey: z.string().optional(),
 });
 
 /**

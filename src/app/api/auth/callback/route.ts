@@ -89,12 +89,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${APP_URL}/join/${pendingJoinToken}`);
     }
 
-    // Redirect based on role
-    if (!user.role) {
-      // No role set - redirect to onboarding
+    // Redirect based on activeRole
+    if (!user.activeRole) {
+      // No activeRole set - redirect to onboarding
       return NextResponse.redirect(`${APP_URL}/onboarding/role`);
     } else {
-      // Role set - redirect to dashboard
+      // ActiveRole set - redirect to dashboard
       return NextResponse.redirect(`${APP_URL}/dashboard`);
     }
   } catch (error) {

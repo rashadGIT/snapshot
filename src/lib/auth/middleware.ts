@@ -73,13 +73,13 @@ export async function requireRole(
     return null;
   }
 
-  // User must have completed onboarding (role set)
-  if (!auth.user.role) {
+  // User must have completed onboarding (activeRole set)
+  if (!auth.user.activeRole) {
     return null;
   }
 
-  // Check if user has required role
-  if (!allowedRoles.includes(auth.user.role)) {
+  // Check if user's active role is in allowed roles
+  if (!allowedRoles.includes(auth.user.activeRole)) {
     return null;
   }
 

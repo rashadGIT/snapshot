@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
       id: auth.user.id,
       email: auth.user.email,
       name: auth.user.name,
-      role: auth.user.role,
+      roles: auth.user.roles,
+      activeRole: auth.user.activeRole,
     },
   });
 }
@@ -62,33 +63,90 @@ export async function PATCH(request: NextRequest) {
     return unauthorizedResponse();
   }
 
-  // Only allow role update if user has no role (onboarding)
-  if (auth.user.role) {
-    return Response.json({ error: 'Role already set' }, { status: 400 });
-  }
-
   try {
     const body = await request.json();
-    const { role } = body;
+    const { role, activeRole } = body;
 
-    if (!role || !['REQUESTER', 'HELPER'].includes(role)) {
-      return Response.json({ error: 'Invalid role' }, { status: 400 });
+    // Handle initial role selection (onboarding)
+    if (role && !auth.user.activeRole) {
+      if (!['REQUESTER', 'HELPER'].includes(role)) {
+        return Response.json({ error: 'Invalid role' }, { status: 400 });
+      }
+
+      const { prisma } = await import('@/lib/db/prisma');
+      const updatedUser = await prisma.user.update({
+        where: { id: auth.user.id },
+        data: {
+          roles: [role],
+          activeRole: role,
+        },
+      });
+
+      return Response.json({
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          name: updatedUser.name,
+          roles: updatedUser.roles,
+          activeRole: updatedUser.activeRole,
+        },
+      });
     }
 
-    const { prisma } = await import('@/lib/db/prisma');
-    const updatedUser = await prisma.user.update({
-      where: { id: auth.user.id },
-      data: { role },
-    });
+    // Handle active role switching
+    if (activeRole) {
+      if (!['REQUESTER', 'HELPER'].includes(activeRole)) {
+        return Response.json({ error: 'Invalid active role' }, { status: 400 });
+      }
 
-    return Response.json({
-      user: {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        name: updatedUser.name,
-        role: updatedUser.role,
-      },
-    });
+      // Check if user has this role
+      if (!auth.user.roles.includes(activeRole)) {
+        return Response.json({ error: 'You do not have this role' }, { status: 400 });
+      }
+
+      const { prisma } = await import('@/lib/db/prisma');
+      const updatedUser = await prisma.user.update({
+        where: { id: auth.user.id },
+        data: { activeRole },
+      });
+
+      return Response.json({
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          name: updatedUser.name,
+          roles: updatedUser.roles,
+          activeRole: updatedUser.activeRole,
+        },
+      });
+    }
+
+    // Handle adding a new role
+    if (role && !auth.user.roles.includes(role)) {
+      if (!['REQUESTER', 'HELPER'].includes(role)) {
+        return Response.json({ error: 'Invalid role' }, { status: 400 });
+      }
+
+      const { prisma } = await import('@/lib/db/prisma');
+      const updatedUser = await prisma.user.update({
+        where: { id: auth.user.id },
+        data: {
+          roles: [...auth.user.roles, role],
+        },
+      });
+
+      return Response.json({
+        user: {
+          id: updatedUser.id,
+          email: updatedUser.email,
+          name: updatedUser.name,
+          roles: updatedUser.roles,
+          activeRole: updatedUser.activeRole,
+        },
+      });
+    }
+
+    return Response.json({ error: 'No valid update provided' }, { status: 400 });
   } catch (error) {
     console.error('Role update error:', error);
     return Response.json({ error: 'Failed to update role' }, { status: 500 });

@@ -62,6 +62,7 @@ export async function generatePresignedUploadUrl(
     'image/webp',
     'image/heic',
     'video/mp4',
+    'video/webm',
     'video/quicktime',
     'video/x-msvideo',
   ];
