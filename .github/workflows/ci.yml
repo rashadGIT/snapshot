@@ -55,10 +55,10 @@ jobs:
       - name: Run unit & integration tests
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/test
-          AWS_S3_BUCKET: test-bucket
-          AWS_REGION: us-east-1
-          AWS_ACCESS_KEY_ID: test-key
-          AWS_SECRET_ACCESS_KEY: test-secret
+          S3_BUCKET: test-bucket
+          S3_REGION: us-east-1
+          S3_ACCESS_KEY_ID: test-key
+          S3_SECRET_ACCESS_KEY: test-secret
         run: npm test
 
       - name: Install Playwright browsers
