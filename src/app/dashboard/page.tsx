@@ -219,7 +219,7 @@ export default function DashboardPage() {
             </div>
             <h3 className="text-xl font-bold mb-2">No jobs yet</h3>
             <p className="text-gray-600 mb-4">
-              {user.role === 'REQUESTER'
+              {user.roles.includes('REQUESTER')
                 ? "Create your first content capture job to get started"
                 : "Scan a QR code to join your first job"}
             </p>

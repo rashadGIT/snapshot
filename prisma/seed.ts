@@ -212,7 +212,7 @@ async function main() {
   const uploadedJob = await prisma.job.create({
     data: {
       requesterId: req4.id,
-      status: JobStatus.UPLOADED,
+      status: JobStatus.IN_REVIEW,
       title: 'Restaurant Grand Opening',
       description: 'Cover the ribbon cutting and first guests. Need interior shots of the space.',
       location: 'Brooklyn Heights, NYC',
