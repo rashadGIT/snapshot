@@ -136,7 +136,7 @@ export default function RoleSelectionPage() {
               </svg>
             </div>
 
-            <h3 className="text-xl font-bold mb-2">I'm a Helper</h3>
+            <h3 className="text-xl font-bold mb-2">I&apos;m a Helper</h3>
             <p className="text-gray-600 mb-4">
               I want to capture content at events and get paid
             </p>
@@ -185,7 +185,7 @@ export default function RoleSelectionPage() {
 
         {/* Note */}
         <p className="text-center text-sm text-gray-500 mt-4">
-          You can't change your role later, so choose carefully!
+          You can&apos;t change your role later, so choose carefully!
         </p>
       </div>
     </main>

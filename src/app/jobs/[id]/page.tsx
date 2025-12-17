@@ -70,7 +70,7 @@ export default function JobDetailsPage() {
   const [qrData, setQrData] = useState<QRData | null>(null);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  // const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   // const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
   const [cameraActive, setCameraActive] = useState(false);

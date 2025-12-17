@@ -53,7 +53,7 @@ export async function generatePresignedUploadUrl(
   jobId: string,
   filename: string,
   contentType: string,
-  maxSizeBytes: number = 100 * 1024 * 1024, // 100MB default
+  _maxSizeBytes: number = 100 * 1024 * 1024, // 100MB default
 ): Promise<{ url: string; key: string; bucket: string }> {
   // Validate content type (images and videos only)
   const allowedTypes = [
