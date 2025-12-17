@@ -24,8 +24,8 @@ describe('Job Status Transitions', () => {
       expect(result.error).toBeDefined();
     });
 
-    it('should reject transition to UPLOADED', () => {
-      const result = validateStatusTransition(JobStatus.OPEN, JobStatus.UPLOADED);
+    it('should reject transition to IN_REVIEW', () => {
+      const result = validateStatusTransition(JobStatus.OPEN, JobStatus.IN_REVIEW);
       expect(result.valid).toBe(false);
     });
 
@@ -51,15 +51,15 @@ describe('Job Status Transitions', () => {
       expect(result.valid).toBe(false);
     });
 
-    it('should reject transition to UPLOADED', () => {
-      const result = validateStatusTransition(JobStatus.ACCEPTED, JobStatus.UPLOADED);
+    it('should reject transition to IN_REVIEW', () => {
+      const result = validateStatusTransition(JobStatus.ACCEPTED, JobStatus.IN_REVIEW);
       expect(result.valid).toBe(false);
     });
   });
 
   describe('IN_PROGRESS status', () => {
-    it('should allow transition to UPLOADED', () => {
-      const result = validateStatusTransition(JobStatus.IN_PROGRESS, JobStatus.UPLOADED);
+    it('should allow transition to IN_REVIEW', () => {
+      const result = validateStatusTransition(JobStatus.IN_PROGRESS, JobStatus.IN_REVIEW);
       expect(result.valid).toBe(true);
     });
 
@@ -74,19 +74,19 @@ describe('Job Status Transitions', () => {
     });
   });
 
-  describe('UPLOADED status', () => {
+  describe('IN_REVIEW status', () => {
     it('should allow transition to COMPLETED', () => {
-      const result = validateStatusTransition(JobStatus.UPLOADED, JobStatus.COMPLETED);
+      const result = validateStatusTransition(JobStatus.IN_REVIEW, JobStatus.COMPLETED);
       expect(result.valid).toBe(true);
     });
 
     it('should allow transition to CANCELLED', () => {
-      const result = validateStatusTransition(JobStatus.UPLOADED, JobStatus.CANCELLED);
+      const result = validateStatusTransition(JobStatus.IN_REVIEW, JobStatus.CANCELLED);
       expect(result.valid).toBe(true);
     });
 
     it('should reject transition to IN_PROGRESS', () => {
-      const result = validateStatusTransition(JobStatus.UPLOADED, JobStatus.IN_PROGRESS);
+      const result = validateStatusTransition(JobStatus.IN_REVIEW, JobStatus.IN_PROGRESS);
       expect(result.valid).toBe(false);
     });
   });
@@ -97,7 +97,7 @@ describe('Job Status Transitions', () => {
         JobStatus.OPEN,
         JobStatus.ACCEPTED,
         JobStatus.IN_PROGRESS,
-        JobStatus.UPLOADED,
+        JobStatus.IN_REVIEW,
         JobStatus.CANCELLED,
       ];
 
@@ -114,7 +114,7 @@ describe('Job Status Transitions', () => {
         JobStatus.OPEN,
         JobStatus.ACCEPTED,
         JobStatus.IN_PROGRESS,
-        JobStatus.UPLOADED,
+        JobStatus.IN_REVIEW,
         JobStatus.COMPLETED,
       ];
 
@@ -126,12 +126,12 @@ describe('Job Status Transitions', () => {
   });
 
   describe('Complete workflow path', () => {
-    it('should validate the happy path: OPEN → ACCEPTED → IN_PROGRESS → UPLOADED → COMPLETED', () => {
+    it('should validate the happy path: OPEN → ACCEPTED → IN_PROGRESS → IN_REVIEW → COMPLETED', () => {
       const transitions = [
         { from: JobStatus.OPEN, to: JobStatus.ACCEPTED },
         { from: JobStatus.ACCEPTED, to: JobStatus.IN_PROGRESS },
-        { from: JobStatus.IN_PROGRESS, to: JobStatus.UPLOADED },
-        { from: JobStatus.UPLOADED, to: JobStatus.COMPLETED },
+        { from: JobStatus.IN_PROGRESS, to: JobStatus.IN_REVIEW },
+        { from: JobStatus.IN_REVIEW, to: JobStatus.COMPLETED },
       ];
 
       transitions.forEach(({ from, to }) => {
@@ -145,7 +145,7 @@ describe('Job Status Transitions', () => {
         JobStatus.OPEN,
         JobStatus.ACCEPTED,
         JobStatus.IN_PROGRESS,
-        JobStatus.UPLOADED,
+        JobStatus.IN_REVIEW,
       ];
 
       cancellableStatuses.forEach((status) => {

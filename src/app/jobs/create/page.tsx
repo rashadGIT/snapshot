@@ -80,10 +80,11 @@ export default function CreateJobPage() {
           <div className="card space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="job-title" className="block text-sm font-medium mb-2">
                 Job Title <span className="text-red-500">*</span>
               </label>
               <input
+                id="job-title"
                 type="text"
                 required
                 minLength={5}
@@ -98,10 +99,11 @@ export default function CreateJobPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="job-description" className="block text-sm font-medium mb-2">
                 Description <span className="text-red-500">*</span>
               </label>
               <textarea
+                id="job-description"
                 required
                 minLength={10}
                 maxLength={1000}
@@ -115,10 +117,11 @@ export default function CreateJobPage() {
 
             {/* Location */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="job-location" className="block text-sm font-medium mb-2">
                 Location <span className="text-red-500">*</span>
               </label>
               <input
+                id="job-location"
                 type="text"
                 required
                 minLength={3}
@@ -132,10 +135,11 @@ export default function CreateJobPage() {
 
             {/* Event Time */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="job-event-time" className="block text-sm font-medium mb-2">
                 Event Date & Time <span className="text-red-500">*</span>
               </label>
               <input
+                id="job-event-time"
                 type="datetime-local"
                 required
                 value={formData.eventTime}
@@ -146,10 +150,10 @@ export default function CreateJobPage() {
 
             {/* Content Type */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="content-type-group" className="block text-sm font-medium mb-2">
                 Content Type <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div id="content-type-group" className="grid grid-cols-3 gap-3">
                 {(['photos', 'videos', 'both'] as const).map((type) => (
                   <button
                     key={type}
@@ -167,10 +171,10 @@ export default function CreateJobPage() {
 
             {/* Price Tier */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="price-tier-group" className="block text-sm font-medium mb-2">
                 Price Tier <span className="text-red-500">*</span>
               </label>
-              <div className="grid grid-cols-3 gap-3">
+              <div id="price-tier-group" className="grid grid-cols-3 gap-3">
                 {(['basic', 'standard', 'premium'] as const).map((tier) => (
                   <button
                     key={tier}
@@ -195,10 +199,11 @@ export default function CreateJobPage() {
 
             {/* Notes (Optional) */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label htmlFor="job-notes" className="block text-sm font-medium mb-2">
                 Additional Notes <span className="text-gray-400">(Optional)</span>
               </label>
               <textarea
+                id="job-notes"
                 maxLength={500}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
