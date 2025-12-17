@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generatePKCE, getCognitoLoginUrl } from '@/lib/auth/cognito';
 import { cookies } from 'next/headers';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   // Generate PKCE challenge
   const { codeVerifier, codeChallenge } = generatePKCE();
 

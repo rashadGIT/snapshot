@@ -58,7 +58,7 @@ export default function JoinJobPage() {
             setToken(scannedToken);
           }
         },
-        (error) => {
+        (_error) => {
           // Ignore scan errors (happens continuously while scanning)
         }
       );
@@ -201,7 +201,7 @@ export default function JoinJobPage() {
                   autoFocus
                 />
                 <p className="text-sm text-gray-500 mt-2">
-                  Get this from the Requester's QR code screen
+                  Get this from the Requester&apos;s QR code screen
                 </p>
               </div>
 

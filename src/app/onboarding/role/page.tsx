@@ -46,7 +46,7 @@ export default function RoleSelectionPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">Welcome to Snapspot!</h1>
-          <p className="text-gray-600">Choose how you'd like to use Snapspot</p>
+          <p className="text-gray-600">Choose how you&apos;d like to use Snapspot</p>
         </div>
 
         {/* Role Cards */}
@@ -76,7 +76,7 @@ export default function RoleSelectionPage() {
               </svg>
             </div>
 
-            <h3 className="text-xl font-bold mb-2">I'm a Requester</h3>
+            <h3 className="text-xl font-bold mb-2">I&apos;m a Requester</h3>
             <p className="text-gray-600 mb-4">
               I need someone to capture photos and videos at my events
             </p>

@@ -72,7 +72,7 @@ export default function JobDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
+  // const [uploadProgress, setUploadProgress] = useState<Record<number, number>>({});
   const [cameraActive, setCameraActive] = useState(false);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [captureMode, setCaptureMode] = useState<'photo' | 'video'>('photo');
@@ -482,89 +482,89 @@ export default function JobDetailsPage() {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setSelectedFiles((prev) => [...prev, ...files]);
-  };
+  // const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = Array.from(e.target.files || []);
+  //   setSelectedFiles((prev) => [...prev, ...files]);
+  // };
 
-  const removeFile = (index: number) => {
-    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-  };
+  // const removeFile = (index: number) => {
+  //   setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+  // };
 
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
-
-    setUploading(true);
-    const newProgress: Record<number, number> = {};
-    selectedFiles.forEach((_, i) => (newProgress[i] = 0));
-    setUploadProgress(newProgress);
-
-    try {
-      for (let i = 0; i < selectedFiles.length; i++) {
-        const file = selectedFiles[i];
-
-        // 1. Get pre-signed URL
-        const urlResponse = await fetch('/api/uploads/presigned-url', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jobId,
-            filename: file.name,
-            contentType: file.type,
-            fileSize: file.size,
-          }),
-        });
-
-        if (!urlResponse.ok) {
-          throw new Error('Failed to get upload URL');
-        }
-
-        const { url, key, bucket } = await urlResponse.json();
-
-        // 2. Upload to S3
-        setUploadProgress((prev) => ({ ...prev, [i]: 10 }));
-
-        const uploadResponse = await fetch(url, {
-          method: 'PUT',
-          body: file,
-          headers: {
-            'Content-Type': file.type,
-          },
-        });
-
-        if (!uploadResponse.ok) {
-          throw new Error('Failed to upload file');
-        }
-
-        setUploadProgress((prev) => ({ ...prev, [i]: 80 }));
-
-        // 3. Record upload in database
-        await fetch(`/api/jobs/${jobId}/uploads`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            s3Key: key,
-            s3Bucket: bucket,
-            fileName: file.name,
-            fileType: file.type,
-            fileSize: file.size,
-          }),
-        });
-
-        setUploadProgress((prev) => ({ ...prev, [i]: 100 }));
-      }
-
-      alert('All files uploaded successfully!');
-      setSelectedFiles([]);
-      setUploadProgress({});
-      loadJob(); // Reload to show uploads
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert('Upload failed. Please try again.');
-    } finally {
-      setUploading(false);
-    }
-  };
+  // const handleUpload = async () => {
+  //   if (selectedFiles.length === 0) return;
+  //
+  //   setUploading(true);
+  //   const newProgress: Record<number, number> = {};
+  //   selectedFiles.forEach((_, i) => (newProgress[i] = 0));
+  //   setUploadProgress(newProgress);
+  //
+  //   try {
+  //     for (let i = 0; i < selectedFiles.length; i++) {
+  //       const file = selectedFiles[i];
+  //
+  //       // 1. Get pre-signed URL
+  //       const urlResponse = await fetch('/api/uploads/presigned-url', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           jobId,
+  //           filename: file.name,
+  //           contentType: file.type,
+  //           fileSize: file.size,
+  //         }),
+  //       });
+  //
+  //       if (!urlResponse.ok) {
+  //         throw new Error('Failed to get upload URL');
+  //       }
+  //
+  //       const { url, key, bucket } = await urlResponse.json();
+  //
+  //       // 2. Upload to S3
+  //       setUploadProgress((prev) => ({ ...prev, [i]: 10 }));
+  //
+  //       const uploadResponse = await fetch(url, {
+  //         method: 'PUT',
+  //         body: file,
+  //         headers: {
+  //           'Content-Type': file.type,
+  //         },
+  //       });
+  //
+  //       if (!uploadResponse.ok) {
+  //         throw new Error('Failed to upload file');
+  //       }
+  //
+  //       setUploadProgress((prev) => ({ ...prev, [i]: 80 }));
+  //
+  //       // 3. Record upload in database
+  //       await fetch(`/api/jobs/${jobId}/uploads`, {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({
+  //           s3Key: key,
+  //           s3Bucket: bucket,
+  //           fileName: file.name,
+  //           fileType: file.type,
+  //           fileSize: file.size,
+  //         }),
+  //       });
+  //
+  //       setUploadProgress((prev) => ({ ...prev, [i]: 100 }));
+  //     }
+  //
+  //     alert('All files uploaded successfully!');
+  //     setSelectedFiles([]);
+  //     setUploadProgress({});
+  //     loadJob(); // Reload to show uploads
+  //   } catch (error) {
+  //     console.error('Upload failed:', error);
+  //     alert('Upload failed. Please try again.');
+  //   } finally {
+  //     setUploading(false);
+  //   }
+  // };
 
   const generateQRCode = async () => {
     try {
@@ -606,7 +606,7 @@ export default function JobDetailsPage() {
     return null;
   }
 
-  const isRequester = currentUser.activeRole === 'REQUESTER';
+  // const isRequester = currentUser.activeRole === 'REQUESTER';
   const isHelper = currentUser.activeRole === 'HELPER';
 
   // Generate S3 URL for viewing uploaded files
@@ -921,7 +921,7 @@ export default function JobDetailsPage() {
                 </svg>
                 <h3 className="text-lg font-bold mb-2">Job Approved & Completed</h3>
                 <p className="text-gray-600 mb-1">The requester has approved your work</p>
-                <p className="text-sm text-gray-500">Content is now in the requester's possession</p>
+                <p className="text-sm text-gray-500">Content is now in the requester&apos;s possession</p>
               </div>
             </div>
           )}

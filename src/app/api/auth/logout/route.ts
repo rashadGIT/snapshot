@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getCognitoLogoutUrl } from '@/lib/auth/cognito';
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   // Clear auth cookies
   const cookieStore = await cookies();
   cookieStore.delete('id_token');
