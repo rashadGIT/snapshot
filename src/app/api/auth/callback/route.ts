@@ -99,6 +99,8 @@ export async function GET(request: NextRequest) {
     }
   } catch (error) {
     console.error('OAuth callback error:', error);
-    return NextResponse.redirect(`${APP_URL}/?error=auth_failed`);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('Error details:', errorMessage);
+    return NextResponse.redirect(`${APP_URL}/?error=auth_failed&details=${encodeURIComponent(errorMessage)}`);
   }
 }
