@@ -6,8 +6,10 @@
 import { randomBytes, createHash } from 'crypto';
 
 // Read env vars at runtime, not at module load time
+// For Amplify SSR, we need to use NEXT_PUBLIC_ prefix for variables used in API routes
 function getEnv(key: string): string {
-  const value = process.env[key];
+  // Try both prefixes for Amplify compatibility
+  const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
   if (!value) {
     console.error(`Missing environment variable: ${key}`);
     console.error('Available env vars:', Object.keys(process.env).filter(k => k.includes('COGNITO')));
