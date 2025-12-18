@@ -5,11 +5,14 @@
 
 import { randomBytes, createHash } from 'crypto';
 
-const COGNITO_DOMAIN = process.env.NEXT_PUBLIC_COGNITO_DOMAIN!;
-const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
-const COGNITO_CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.COGNITO_REDIRECT_URI!;
-const LOGOUT_URI = process.env.COGNITO_LOGOUT_URI!;
+// Read env vars at runtime, not at module load time
+function getEnv(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+  return value;
+}
 
 /**
  * Generate PKCE code verifier and challenge
@@ -31,15 +34,15 @@ export function generatePKCE() {
 export function getCognitoLoginUrl(codeChallenge: string): string {
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: COGNITO_CLIENT_ID,
-    redirect_uri: REDIRECT_URI,
+    client_id: getEnv('COGNITO_CLIENT_ID'),
+    redirect_uri: getEnv('COGNITO_REDIRECT_URI'),
     identity_provider: 'Google', // Force Google login
     scope: 'openid email profile',
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
   });
 
-  return `https://${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+  return `https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/oauth2/authorize?${params.toString()}`;
 }
 
 /**
@@ -47,11 +50,11 @@ export function getCognitoLoginUrl(codeChallenge: string): string {
  */
 export function getCognitoLogoutUrl(): string {
   const params = new URLSearchParams({
-    client_id: COGNITO_CLIENT_ID,
-    logout_uri: LOGOUT_URI,
+    client_id: getEnv('COGNITO_CLIENT_ID'),
+    logout_uri: getEnv('COGNITO_LOGOUT_URI'),
   });
 
-  return `https://${COGNITO_DOMAIN}/logout?${params.toString()}`;
+  return `https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/logout?${params.toString()}`;
 }
 
 /**
@@ -63,14 +66,14 @@ export async function exchangeCodeForTokens(
 ): Promise<{ id_token: string; access_token: string; refresh_token: string }> {
   const params = new URLSearchParams({
     grant_type: 'authorization_code',
-    client_id: COGNITO_CLIENT_ID,
-    client_secret: COGNITO_CLIENT_SECRET,
+    client_id: getEnv('COGNITO_CLIENT_ID'),
+    client_secret: getEnv('COGNITO_CLIENT_SECRET'),
     code,
     code_verifier: codeVerifier,
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: getEnv('COGNITO_REDIRECT_URI'),
   });
 
-  const response = await fetch(`https://${COGNITO_DOMAIN}/oauth2/token`, {
+  const response = await fetch(`https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/oauth2/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
