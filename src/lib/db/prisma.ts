@@ -16,7 +16,7 @@ function getDatabaseUrl(): string {
 
   if (!url) {
     // If DATABASE_URL is not set, use hardcoded value for Amplify deployment
-    const hardcodedUrl = 'postgresql://snapspot:rdShgqzlSNOI7KFgw75yBo1e8@snapspot-db.cwicba7ofk1o.us-east-1.rds.amazonaws.com:5432/postgres';
+    const hardcodedUrl = 'postgresql://postgres:rdShgqzlSNOI7KFgw75yBo1e8@snapspot-db.cwicba7ofk1o.us-east-1.rds.amazonaws.com:5432/postgres';
     console.log('DATABASE_URL not found in env, using hardcoded value');
     return hardcodedUrl;
   }
