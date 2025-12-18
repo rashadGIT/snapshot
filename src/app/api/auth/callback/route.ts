@@ -9,7 +9,8 @@ import { exchangeCodeForTokens } from '@/lib/auth/cognito';
 import { verifyCognitoToken } from '@/lib/auth/jwt';
 import { prisma } from '@/lib/db/prisma';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL!;
+// TEMPORARY: Hardcoded fallback for Amplify
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://master.d2sufnimjy7hms.amplifyapp.com';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
