@@ -9,7 +9,9 @@ import { randomBytes, createHash } from 'crypto';
 function getEnv(key: string): string {
   const value = process.env[key];
   if (!value) {
-    throw new Error(`Missing environment variable: ${key}`);
+    console.error(`Missing environment variable: ${key}`);
+    console.error('Available env vars:', Object.keys(process.env).filter(k => k.includes('COGNITO')));
+    throw new Error(`Missing environment variable: ${key}. This should be set in Amplify environment variables.`);
   }
   return value;
 }
