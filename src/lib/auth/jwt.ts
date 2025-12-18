@@ -6,16 +6,45 @@
 
 import { jwtVerify, createRemoteJWKSet, type JWTPayload } from 'jose';
 
-const COGNITO_REGION = process.env.COGNITO_REGION!;
-const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID!;
-const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID!;
-const COGNITO_ISSUER = process.env.COGNITO_ISSUER!;
+// TEMPORARY HARDCODED VALUES FOR TESTING
+// TODO: Remove this and fix Amplify environment variables
+const HARDCODED_CONFIG = {
+  COGNITO_REGION: 'us-east-1',
+  COGNITO_USER_POOL_ID: 'us-east-1_w26khZFQU',
+  COGNITO_CLIENT_ID: '2u118nfmdbm3ard5gjngiri760',
+  COGNITO_ISSUER: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_w26khZFQU',
+};
 
-// JWKS endpoint for Cognito public keys
-const JWKS_URI = `https://cognito-idp.${COGNITO_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}/.well-known/jwks.json`;
+// Read env vars at runtime, not at module load time
+function getEnv(key: string): string {
+  // Try env vars first
+  const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
 
-// Create JWKS remote set (automatically fetches and caches public keys)
-const JWKS = createRemoteJWKSet(new URL(JWKS_URI));
+  // Fallback to hardcoded for testing
+  if (!value && HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG]) {
+    console.log(`Using hardcoded value for ${key} (env var not available)`);
+    return HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG];
+  }
+
+  if (!value) {
+    console.error(`Missing environment variable: ${key}`);
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+  return value;
+}
+
+// Lazy-load JWKS to avoid module-time env var access
+let JWKS: ReturnType<typeof createRemoteJWKSet> | null = null;
+
+function getJWKS(): ReturnType<typeof createRemoteJWKSet> {
+  if (!JWKS) {
+    const COGNITO_REGION = getEnv('COGNITO_REGION');
+    const COGNITO_USER_POOL_ID = getEnv('COGNITO_USER_POOL_ID');
+    const JWKS_URI = `https://cognito-idp.${COGNITO_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}/.well-known/jwks.json`;
+    JWKS = createRemoteJWKSet(new URL(JWKS_URI));
+  }
+  return JWKS;
+}
 
 export interface CognitoTokenPayload extends JWTPayload {
   sub: string; // Cognito user ID
@@ -37,8 +66,11 @@ export interface CognitoTokenPayload extends JWTPayload {
  */
 export async function verifyCognitoToken(token: string): Promise<CognitoTokenPayload> {
   try {
+    const COGNITO_ISSUER = getEnv('COGNITO_ISSUER');
+    const COGNITO_CLIENT_ID = getEnv('COGNITO_CLIENT_ID');
+
     // Verify JWT signature and claims
-    const { payload } = await jwtVerify(token, JWKS, {
+    const { payload } = await jwtVerify(token, getJWKS(), {
       issuer: COGNITO_ISSUER,
       audience: COGNITO_CLIENT_ID,
     });
