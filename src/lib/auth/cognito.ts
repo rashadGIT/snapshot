@@ -5,11 +5,27 @@
 
 import { randomBytes, createHash } from 'crypto';
 
+// TEMPORARY HARDCODED VALUES FOR TESTING
+// TODO: Remove this and fix Amplify environment variables
+const HARDCODED_CONFIG = {
+  COGNITO_CLIENT_ID: '2u118nfmdbm3ard5gjngiri760',
+  NEXT_PUBLIC_COGNITO_DOMAIN: 'us-east-1w26khzfqu.auth.us-east-1.amazoncognito.com',
+  COGNITO_REDIRECT_URI: 'https://master.d2sufnimjy7hms.amplifyapp.com/api/auth/callback',
+  COGNITO_LOGOUT_URI: 'https://master.d2sufnimjy7hms.amplifyapp.com',
+  COGNITO_CLIENT_SECRET: 'mmhotdq6evhj15ao6f6noslk7mile3spsps4dto62effv5juipc', // TODO: Replace with actual secret
+};
+
 // Read env vars at runtime, not at module load time
-// For Amplify SSR, we need to use NEXT_PUBLIC_ prefix for variables used in API routes
 function getEnv(key: string): string {
-  // Try both prefixes for Amplify compatibility
+  // Try env vars first
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
+
+  // Fallback to hardcoded for testing
+  if (!value && HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG]) {
+    console.log(`Using hardcoded value for ${key} (env var not available)`);
+    return HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG];
+  }
+
   if (!value) {
     console.error(`Missing environment variable: ${key}`);
     console.error('Available env vars:', Object.keys(process.env).filter(k => k.includes('COGNITO')));
