@@ -9,6 +9,7 @@ import { NextRequest } from 'next/server';
 import { requireRole, unauthorizedResponse, notFoundResponse, badRequestResponse, serverErrorResponse } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -92,7 +93,7 @@ export async function DELETE(
       message: 'Upload deleted successfully',
     });
   } catch (error) {
-    console.error('Failed to delete upload:', error);
+    logger.error('Failed to delete upload:', error);
     return serverErrorResponse();
   }
 }

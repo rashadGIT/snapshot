@@ -8,6 +8,7 @@ import { requireRole, unauthorizedResponse, badRequestResponse, notFoundResponse
 import { prisma } from '@/lib/db/prisma';
 import { validateQRToken } from '@/lib/qr/token';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -79,9 +80,9 @@ export async function POST(
           data: { status: 'ACCEPTED' },
         }),
       ]);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle unique constraint violation (job already has a Helper)
-      if (error.code === 'P2002') {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
         return badRequestResponse('Job already has a Helper');
       }
       throw error;
@@ -92,8 +93,8 @@ export async function POST(
       message: 'Successfully joined job',
       jobId,
     });
-  } catch (error) {
-    console.error('Join job failed:', error);
+  } catch (error: unknown) {
+    logger.error('Join job failed:', error);
     return serverErrorResponse();
   }
 }

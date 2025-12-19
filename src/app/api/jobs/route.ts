@@ -9,6 +9,7 @@ import { requireRole, unauthorizedResponse, badRequestResponse, serverErrorRespo
 import { prisma } from '@/lib/db/prisma';
 import { createJobSchema } from '@/lib/validation/schemas';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json({ jobs });
   } catch (error) {
-    console.error('Failed to fetch jobs:', error);
+    logger.error('Failed to fetch jobs:', error);
     return serverErrorResponse();
   }
 }
@@ -102,11 +103,12 @@ export async function POST(request: NextRequest) {
     });
 
     return Response.json({ job }, { status: 201 });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      return badRequestResponse(error.errors[0].message);
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+      const zodError = error as { errors: Array<{ message: string }> };
+      return badRequestResponse(zodError.errors[0].message);
     }
-    console.error('Failed to create job:', error);
+    logger.error('Failed to create job:', error);
     return serverErrorResponse();
   }
 }

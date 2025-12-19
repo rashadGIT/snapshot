@@ -580,11 +580,12 @@ describe('Dashboard Component', () => {
       render(<DashboardPage />);
 
       await waitFor(() => {
-        expect(screen.getByText('Sign Out')).toBeDefined();
+        expect(screen.getAllByText('Sign Out').length).toBeGreaterThan(0);
       });
 
-      const signOutButton = screen.getByText('Sign Out');
-      fireEvent.click(signOutButton);
+      // There are two Sign Out buttons (mobile and desktop), click the first one
+      const signOutButtons = screen.getAllByText('Sign Out');
+      fireEvent.click(signOutButtons[0]);
 
       expect(window.location.href).toBe('/api/auth/logout');
 

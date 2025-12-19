@@ -5,6 +5,7 @@
  */
 
 import { jwtVerify, createRemoteJWKSet, type JWTPayload } from 'jose';
+import { logger } from '@/lib/utils/logger';
 
 // TEMPORARY: Hardcoded fallbacks for Amplify Lambda environment
 const FALLBACK_CONFIG: Record<string, string> = {
@@ -20,7 +21,7 @@ function getEnv(key: string): string {
 
   // Use fallback if env var not found
   if (!value && FALLBACK_CONFIG[key]) {
-    console.log(`Using hardcoded fallback for ${key}`);
+    logger.info(`Using hardcoded fallback for ${key}`);
     return FALLBACK_CONFIG[key];
   }
 

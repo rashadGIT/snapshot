@@ -7,6 +7,7 @@ import { NextRequest } from 'next/server';
 import { requireRole, unauthorizedResponse, notFoundResponse, serverErrorResponse } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -85,7 +86,7 @@ export async function GET(
 
     return Response.json({ job });
   } catch (error) {
-    console.error('Failed to fetch job:', error);
+    logger.error('Failed to fetch job:', error);
     return serverErrorResponse();
   }
 }

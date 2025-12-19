@@ -4,6 +4,7 @@
  */
 
 import { randomBytes, createHash } from 'crypto';
+import { logger } from '@/lib/utils/logger';
 
 // TEMPORARY: Hardcoded fallbacks for Amplify Lambda environment
 // These are used when env vars don't propagate to Lambda properly
@@ -23,7 +24,7 @@ function getEnv(key: string): string {
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
 
   // Debug logging
-  console.log(`getEnv('${key}'):`, {
+  logger.debug(`getEnv('${key}'):`, {
     directValue: !!process.env[key],
     publicValue: !!process.env[`NEXT_PUBLIC_${key}`],
     found: !!value,
@@ -32,7 +33,7 @@ function getEnv(key: string): string {
 
   // Use fallback if env var not found
   if (!value && FALLBACK_CONFIG[key]) {
-    console.log(`Using hardcoded fallback for ${key}`);
+    logger.info(`Using hardcoded fallback for ${key}`);
     return FALLBACK_CONFIG[key];
   }
 

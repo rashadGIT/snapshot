@@ -6,6 +6,7 @@
 import { NextRequest } from 'next/server';
 import { authenticateRequest, unauthorizedResponse } from '@/lib/auth/middleware';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 export async function GET(request: NextRequest) {
   // Get token from cookie instead of Authorization header for this endpoint
@@ -148,7 +149,7 @@ export async function PATCH(request: NextRequest) {
 
     return Response.json({ error: 'No valid update provided' }, { status: 400 });
   } catch (error) {
-    console.error('Role update error:', error);
+    logger.error('Role update error:', error);
     return Response.json({ error: 'Failed to update role' }, { status: 500 });
   }
 }

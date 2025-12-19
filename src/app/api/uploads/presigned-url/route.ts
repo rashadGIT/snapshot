@@ -9,6 +9,7 @@ import { prisma } from '@/lib/db/prisma';
 import { generatePresignedUploadUrl } from '@/lib/storage/s3';
 import { presignedUrlRequestSchema } from '@/lib/validation/schemas';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -61,11 +62,12 @@ export async function POST(request: NextRequest) {
     );
 
     return Response.json({ url, key, bucket });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      return badRequestResponse(error.errors[0].message);
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+      const zodError = error as { errors: Array<{ message: string }> };
+      return badRequestResponse(zodError.errors[0].message);
     }
-    console.error('Pre-signed URL generation failed:', error);
+    logger.error('Pre-signed URL generation failed:', error);
     return serverErrorResponse();
   }
 }

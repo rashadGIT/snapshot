@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { generatePKCE, getCognitoLoginUrl } from '@/lib/auth/cognito';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 // Force dynamic rendering (don't prerender at build time)
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export const dynamic = 'force-dynamic';
 export async function GET(_request: NextRequest) {
   try {
     // Debug: Check if env vars are available directly
-    console.log('Direct env check:', {
+    logger.debug('Direct env check:', {
       COGNITO_CLIENT_ID: !!process.env.COGNITO_CLIENT_ID,
       COGNITO_REDIRECT_URI: !!process.env.COGNITO_REDIRECT_URI,
       NEXT_PUBLIC_COGNITO_DOMAIN: !!process.env.NEXT_PUBLIC_COGNITO_DOMAIN,
@@ -36,7 +37,7 @@ export async function GET(_request: NextRequest) {
     const loginUrl = getCognitoLoginUrl(codeChallenge);
     return NextResponse.redirect(loginUrl);
   } catch (error) {
-    console.error('Login error:', error);
+    logger.error('Login error:', error);
     return NextResponse.json(
       {
         error: 'Login failed',

@@ -6,6 +6,7 @@
 import { NextRequest } from 'next/server';
 import { checkQRToken } from '@/lib/qr/token';
 import { badRequestResponse } from '@/lib/auth/middleware';
+import { logger } from '@/lib/utils/logger';
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     return Response.json(result);
   } catch (error) {
-    console.error('Token check failed:', error);
+    logger.error('Token check failed:', error);
     return Response.json({ valid: false, reason: 'Invalid token' });
   }
 }

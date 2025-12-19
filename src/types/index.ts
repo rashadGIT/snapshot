@@ -37,8 +37,7 @@ export interface AuthUser {
 /**
  * API response types
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data?: T;
   error?: string;
 }

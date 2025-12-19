@@ -8,6 +8,7 @@ import { requireRole, unauthorizedResponse, notFoundResponse, serverErrorRespons
 import { prisma } from '@/lib/db/prisma';
 import { createQRToken } from '@/lib/qr/token';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -63,7 +64,7 @@ export async function POST(
       expiresAt: qrData.expiresAt.toISOString(),
     });
   } catch (error) {
-    console.error('QR generation failed:', error);
+    logger.error('QR generation failed:', error);
     return serverErrorResponse();
   }
 }

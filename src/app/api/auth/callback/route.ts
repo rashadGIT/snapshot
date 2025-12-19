@@ -8,12 +8,25 @@ import { cookies } from 'next/headers';
 import { exchangeCodeForTokens } from '@/lib/auth/cognito';
 import { verifyCognitoToken } from '@/lib/auth/jwt';
 import { prisma } from '@/lib/db/prisma';
+import { logger } from '@/lib/utils/logger';
 
 // Force dynamic rendering (don't prerender at build time)
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://master.d2sufnimjy7hms.amplifyapp.com';
+  // Get APP_URL from environment
+  let APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!APP_URL) {
+    // In development/test, fail loudly
+    if (process.env.NODE_ENV !== 'production') {
+      throw new Error('NEXT_PUBLIC_APP_URL environment variable is required');
+    }
+    // In production, use fallback but warn
+    logger.warn('NEXT_PUBLIC_APP_URL not set, using hardcoded fallback');
+    APP_URL = 'https://master.d2sufnimjy7hms.amplifyapp.com';
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');
@@ -100,9 +113,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${APP_URL}/dashboard`);
     }
   } catch (error) {
-    console.error('OAuth callback error:', error);
+    logger.error('OAuth callback error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error details:', errorMessage);
-    return NextResponse.redirect(`${APP_URL}/?error=auth_failed&details=${encodeURIComponent(errorMessage)}`);
+    logger.error('Error details:', errorMessage);
+    // Don't expose internal error details to users - log server-side only
+    return NextResponse.redirect(`${APP_URL}/?error=auth_failed`);
   }
 }

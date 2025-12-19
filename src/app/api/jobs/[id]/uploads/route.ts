@@ -9,6 +9,7 @@ import { requireRole, unauthorizedResponse, badRequestResponse, serverErrorRespo
 import { prisma } from '@/lib/db/prisma';
 import { recordUploadSchema } from '@/lib/validation/schemas';
 import { cookies } from 'next/headers';
+import { logger } from '@/lib/utils/logger';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -34,10 +35,10 @@ export async function POST(
   try {
     const jobId = params.id;
     const body = await request.json();
-    console.log('[Upload API] Received request:', { jobId, body });
+    logger.debug('[Upload API] Received request:', { jobId, body });
 
     const validated = recordUploadSchema.parse(body);
-    console.log('[Upload API] Validated data:', validated);
+    logger.debug('[Upload API] Validated data:', validated);
 
     // Verify Helper is assigned to job
     const assignment = await prisma.assignment.findFirst({
@@ -48,14 +49,14 @@ export async function POST(
     });
 
     if (!assignment) {
-      console.error('[Upload API] User not assigned to job:', { userId: user.id, jobId });
+      logger.error('[Upload API] User not assigned to job:', { userId: user.id, jobId });
       return unauthorizedResponse('Not assigned to this job');
     }
 
-    console.log('[Upload API] Assignment found:', assignment.id);
+    logger.debug('[Upload API] Assignment found:', assignment.id);
 
     // Record upload
-    console.log('[Upload API] Creating upload record...');
+    logger.debug('[Upload API] Creating upload record...');
     const upload = await prisma.upload.create({
       data: {
         jobId,
@@ -69,7 +70,7 @@ export async function POST(
       },
     });
 
-    console.log('[Upload API] Upload created:', upload.id);
+    logger.debug('[Upload API] Upload created:', upload.id);
 
     // Update job status to IN_PROGRESS if still ACCEPTED
     await prisma.job.updateMany({
@@ -82,15 +83,18 @@ export async function POST(
       },
     });
 
-    console.log('[Upload API] Success!');
+    logger.debug('[Upload API] Success!');
     return Response.json({ upload });
-  } catch (error: any) {
-    if (error.name === 'ZodError') {
-      console.error('[Upload API] Validation error:', error.errors);
-      return badRequestResponse(error.errors[0].message);
+  } catch (error: unknown) {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+      const zodError = error as { errors: Array<{ message: string }> };
+      logger.error('[Upload API] Validation error:', zodError.errors);
+      return badRequestResponse(zodError.errors[0].message);
     }
-    console.error('[Upload API] Upload recording failed:', error);
-    console.error('[Upload API] Error stack:', error.stack);
+    logger.error('[Upload API] Upload recording failed:', error);
+    if (error instanceof Error && error.stack) {
+      logger.error('[Upload API] Error stack:', error.stack);
+    }
     return serverErrorResponse();
   }
 }
