@@ -12,6 +12,13 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(_request: NextRequest) {
   try {
+    // Debug: Check if env vars are available directly
+    console.log('Direct env check:', {
+      COGNITO_CLIENT_ID: !!process.env.COGNITO_CLIENT_ID,
+      COGNITO_REDIRECT_URI: !!process.env.COGNITO_REDIRECT_URI,
+      NEXT_PUBLIC_COGNITO_DOMAIN: !!process.env.NEXT_PUBLIC_COGNITO_DOMAIN,
+    });
+
     // Generate PKCE challenge
     const { codeVerifier, codeChallenge } = generatePKCE();
 

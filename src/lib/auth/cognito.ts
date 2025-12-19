@@ -9,6 +9,13 @@ import { randomBytes, createHash } from 'crypto';
 function getEnv(key: string): string {
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
 
+  // Debug logging
+  console.log(`getEnv('${key}'):`, {
+    directValue: !!process.env[key],
+    publicValue: !!process.env[`NEXT_PUBLIC_${key}`],
+    found: !!value,
+  });
+
   if (!value) {
     throw new Error(`Missing environment variable: ${key}. This should be set in Amplify environment variables.`);
   }
