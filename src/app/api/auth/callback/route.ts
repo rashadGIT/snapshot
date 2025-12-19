@@ -13,11 +13,7 @@ import { prisma } from '@/lib/db/prisma';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
-
-  if (!APP_URL) {
-    throw new Error('NEXT_PUBLIC_APP_URL environment variable is required');
-  }
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://master.d2sufnimjy7hms.amplifyapp.com';
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get('code');
   const error = searchParams.get('error');

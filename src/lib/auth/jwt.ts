@@ -6,9 +6,23 @@
 
 import { jwtVerify, createRemoteJWKSet, type JWTPayload } from 'jose';
 
+// TEMPORARY: Hardcoded fallbacks for Amplify Lambda environment
+const FALLBACK_CONFIG: Record<string, string> = {
+  COGNITO_REGION: 'us-east-1',
+  COGNITO_USER_POOL_ID: 'us-east-1_w26khZFQU',
+  COGNITO_CLIENT_ID: '2u118nfmdbm3ard5gjngiri760',
+  COGNITO_ISSUER: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_w26khZFQU',
+};
+
 // Read env vars at runtime, not at module load time
 function getEnv(key: string): string {
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
+
+  // Use fallback if env var not found
+  if (!value && FALLBACK_CONFIG[key]) {
+    console.log(`Using hardcoded fallback for ${key}`);
+    return FALLBACK_CONFIG[key];
+  }
 
   if (!value) {
     throw new Error(`Missing environment variable: ${key}`);

@@ -5,6 +5,18 @@
 
 import { randomBytes, createHash } from 'crypto';
 
+// TEMPORARY: Hardcoded fallbacks for Amplify Lambda environment
+// These are used when env vars don't propagate to Lambda properly
+const FALLBACK_CONFIG: Record<string, string> = {
+  COGNITO_CLIENT_ID: '2u118nfmdbm3ard5gjngiri760',
+  COGNITO_CLIENT_SECRET: 'mmhotdq6evhj15ao6f6noslk7mile3spsps4dto62effv5juipc',
+  COGNITO_REDIRECT_URI: 'https://master.d2sufnimjy7hms.amplifyapp.com/api/auth/callback',
+  COGNITO_LOGOUT_URI: 'https://master.d2sufnimjy7hms.amplifyapp.com',
+  COGNITO_REGION: 'us-east-1',
+  COGNITO_USER_POOL_ID: 'us-east-1_w26khZFQU',
+  COGNITO_ISSUER: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_w26khZFQU',
+};
+
 // Read env vars at runtime, not at module load time
 function getEnv(key: string): string {
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
@@ -14,7 +26,14 @@ function getEnv(key: string): string {
     directValue: !!process.env[key],
     publicValue: !!process.env[`NEXT_PUBLIC_${key}`],
     found: !!value,
+    usingFallback: !value && !!FALLBACK_CONFIG[key],
   });
+
+  // Use fallback if env var not found
+  if (!value && FALLBACK_CONFIG[key]) {
+    console.log(`Using hardcoded fallback for ${key}`);
+    return FALLBACK_CONFIG[key];
+  }
 
   if (!value) {
     throw new Error(`Missing environment variable: ${key}. This should be set in Amplify environment variables.`);
