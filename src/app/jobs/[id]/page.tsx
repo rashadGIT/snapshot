@@ -685,20 +685,20 @@ export default function JobDetailsPage() {
       <main className="min-h-screen bg-gray-50">
         <header className="bg-white border-b border-gray-200">
           <div className="container-safe py-4">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => router.push('/dashboard')}
-                className="text-gray-600 hover:text-black"
+                className="text-gray-600 hover:text-black flex-shrink-0"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold">{job.title}</h1>
-                <p className="text-sm text-gray-600">Helper View</p>
+              <div className="flex-1 min-w-0">
+                <h1 className="text-lg sm:text-2xl font-bold truncate">{job.title}</h1>
+                <p className="text-xs sm:text-sm text-gray-600">Helper View</p>
               </div>
-              <span className={`badge badge-${job.status.toLowerCase()}`}>
+              <span className={`badge badge-${job.status.toLowerCase()} flex-shrink-0 text-xs`}>
                 {job.status}
               </span>
             </div>
@@ -1003,20 +1003,20 @@ export default function JobDetailsPage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="container-safe py-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => router.push('/dashboard')}
-              className="text-gray-600 hover:text-black"
+              className="text-gray-600 hover:text-black flex-shrink-0"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold">{job.title}</h1>
-              <p className="text-sm text-gray-600">Job Details</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-2xl font-bold truncate">{job.title}</h1>
+              <p className="text-xs sm:text-sm text-gray-600">Job Details</p>
             </div>
-            <span className={`badge badge-${job.status.toLowerCase()}`}>
+            <span className={`badge badge-${job.status.toLowerCase()} flex-shrink-0 text-xs`}>
               {job.status}
             </span>
           </div>
