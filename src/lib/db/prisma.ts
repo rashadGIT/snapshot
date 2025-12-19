@@ -9,6 +9,13 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
+// TEMPORARY: Hardcoded fallback for DATABASE_URL
+// Amplify Lambda environment doesn't receive env vars properly
+if (!process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = 'postgresql://postgres:rdShgqzlSNOI7KFgw75yBo1e8@snapspot-db.cwicba7ofk1o.us-east-1.rds.amazonaws.com:5432/postgres';
+  console.log('Using hardcoded DATABASE_URL fallback');
+}
+
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
