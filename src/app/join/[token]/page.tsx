@@ -12,10 +12,31 @@ export default function JoinTokenPage() {
   const params = useParams();
   const router = useRouter();
   const token = params.token as string;
-  const [status, setStatus] = useState<'checking' | 'needs_auth' | 'setting_role' | 'joining' | 'error'>('checking');
+  const [status, setStatus] = useState<'checking' | 'needs_auth' | 'webview_blocked' | 'setting_role' | 'joining' | 'error'>('checking');
   const [errorMessage, setErrorMessage] = useState<string>('');
 
+  // Detect if running in an embedded browser (webview)
+  const isWebView = () => {
+    const ua = navigator.userAgent || navigator.vendor;
+    // Check for common in-app browsers
+    return (
+      ua.includes('Instagram') ||
+      ua.includes('FBAN') || // Facebook
+      ua.includes('FBAV') || // Facebook
+      ua.includes('Twitter') ||
+      ua.includes('Line') ||
+      ua.includes('WebView') ||
+      (ua.includes('iPhone') && !ua.includes('Safari')) ||
+      (ua.includes('Android') && !ua.includes('Chrome'))
+    );
+  };
+
   useEffect(() => {
+    // If in webview, show message to open in real browser
+    if (isWebView()) {
+      setStatus('webview_blocked');
+      return;
+    }
     handleJoinFlow();
   }, []);
 
@@ -99,6 +120,31 @@ export default function JoinTokenPage() {
             <div className="spinner w-12 h-12 mx-auto mb-4"></div>
             <h1 className="text-xl font-bold mb-2">Checking QR Code...</h1>
             <p className="text-gray-600">Please wait</p>
+          </>
+        )}
+
+        {status === 'webview_blocked' && (
+          <>
+            <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h1 className="text-xl font-bold mb-2">Open in Browser</h1>
+            <p className="text-gray-600 mb-4">
+              For security, please open this link in Safari or Chrome instead of this in-app browser.
+            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-left">
+              <p className="text-sm text-gray-700 font-semibold mb-2">How to open in Safari/Chrome:</p>
+              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+                <li>Tap the three dots (•••) or share icon</li>
+                <li>Select "Open in Safari" or "Open in Chrome"</li>
+                <li>Come back here and scan the QR code again</li>
+              </ol>
+            </div>
+            <div className="text-xs text-gray-500 mt-4">
+              URL: {typeof window !== 'undefined' ? window.location.href : ''}
+            </div>
           </>
         )}
 
