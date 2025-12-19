@@ -15,6 +15,7 @@ const FALLBACK_CONFIG: Record<string, string> = {
   COGNITO_REGION: 'us-east-1',
   COGNITO_USER_POOL_ID: 'us-east-1_w26khZFQU',
   COGNITO_ISSUER: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_w26khZFQU',
+  NEXT_PUBLIC_COGNITO_DOMAIN: 'us-east-1w26khzfqu.auth.us-east-1.amazoncognito.com',
 };
 
 // Read env vars at runtime, not at module load time
