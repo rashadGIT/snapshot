@@ -6,28 +6,11 @@
 
 import { jwtVerify, createRemoteJWKSet, type JWTPayload } from 'jose';
 
-// TEMPORARY HARDCODED VALUES FOR TESTING
-// TODO: Remove this and fix Amplify environment variables
-const HARDCODED_CONFIG = {
-  COGNITO_REGION: 'us-east-1',
-  COGNITO_USER_POOL_ID: 'us-east-1_w26khZFQU',
-  COGNITO_CLIENT_ID: '2u118nfmdbm3ard5gjngiri760',
-  COGNITO_ISSUER: 'https://cognito-idp.us-east-1.amazonaws.com/us-east-1_w26khZFQU',
-};
-
 // Read env vars at runtime, not at module load time
 function getEnv(key: string): string {
-  // Try env vars first
   const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
 
-  // Fallback to hardcoded for testing
-  if (!value && HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG]) {
-    console.log(`Using hardcoded value for ${key} (env var not available)`);
-    return HARDCODED_CONFIG[key as keyof typeof HARDCODED_CONFIG];
-  }
-
   if (!value) {
-    console.error(`Missing environment variable: ${key}`);
     throw new Error(`Missing environment variable: ${key}`);
   }
   return value;
