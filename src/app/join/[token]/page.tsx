@@ -138,7 +138,7 @@ export default function JoinTokenPage() {
               <p className="text-sm text-gray-700 font-semibold mb-2">How to open in Safari/Chrome:</p>
               <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
                 <li>Tap the three dots (•••) or share icon</li>
-                <li>Select "Open in Safari" or "Open in Chrome"</li>
+                <li>Select &quot;Open in Safari&quot; or &quot;Open in Chrome&quot;</li>
                 <li>Come back here and scan the QR code again</li>
               </ol>
             </div>
