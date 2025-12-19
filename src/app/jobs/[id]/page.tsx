@@ -87,6 +87,18 @@ export default function JobDetailsPage() {
     loadUserAndJob();
   }, []);
 
+  // Cleanup camera stream on unmount to prevent memory leak
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+    };
+  }, [stream]);
+
   useEffect(() => {
     // Keyboard shortcuts for media viewer
     const handleKeyDown = (e: KeyboardEvent) => {

@@ -53,18 +53,10 @@ export async function POST(
     // Get the job
     const job = await prisma.job.findUnique({
       where: { id: jobId },
-      include: {
-        assignments: true,
-      },
     });
 
     if (!job) {
       return notFoundResponse('Job not found');
-    }
-
-    // Check if job already has a Helper (Phase 1: one Helper per job)
-    if (job.assignments.length > 0) {
-      return badRequestResponse('Job already has a Helper');
     }
 
     // Check if job is in correct status
@@ -72,19 +64,28 @@ export async function POST(
       return badRequestResponse('Job is not available');
     }
 
-    // Create assignment and update job status
-    await prisma.$transaction([
-      prisma.assignment.create({
-        data: {
-          jobId,
-          helperId: user.id,
-        },
-      }),
-      prisma.job.update({
-        where: { id: jobId },
-        data: { status: 'ACCEPTED' },
-      }),
-    ]);
+    // Create assignment and update job status in transaction
+    // The unique constraint on jobId will prevent double-booking
+    try {
+      await prisma.$transaction([
+        prisma.assignment.create({
+          data: {
+            jobId,
+            helperId: user.id,
+          },
+        }),
+        prisma.job.update({
+          where: { id: jobId },
+          data: { status: 'ACCEPTED' },
+        }),
+      ]);
+    } catch (error: any) {
+      // Handle unique constraint violation (job already has a Helper)
+      if (error.code === 'P2002') {
+        return badRequestResponse('Job already has a Helper');
+      }
+      throw error;
+    }
 
     return Response.json({
       success: true,
