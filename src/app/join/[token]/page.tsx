@@ -14,21 +14,45 @@ export default function JoinTokenPage() {
   const token = params.token as string;
   const [status, setStatus] = useState<'checking' | 'needs_auth' | 'webview_blocked' | 'setting_role' | 'joining' | 'error'>('checking');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [copied, setCopied] = useState(false);
 
   // Detect if running in an embedded browser (webview)
   const isWebView = () => {
     const ua = navigator.userAgent || navigator.vendor;
-    // Check for common in-app browsers
-    return (
+
+    // Check for common in-app browsers and QR scanner apps
+    const isInAppBrowser = (
       ua.includes('Instagram') ||
       ua.includes('FBAN') || // Facebook
       ua.includes('FBAV') || // Facebook
       ua.includes('Twitter') ||
       ua.includes('Line') ||
       ua.includes('WebView') ||
-      (ua.includes('iPhone') && !ua.includes('Safari')) ||
-      (ua.includes('Android') && !ua.includes('Chrome'))
+      ua.includes('wv') || // Android webview
+      ua.includes('QR') || // QR scanner apps
+      ua.includes('Scanner') // Scanner apps
     );
+
+    if (isInAppBrowser) {
+      return true;
+    }
+
+    // On mobile, check if it's NOT a known standalone browser
+    const isMobile = ua.includes('iPhone') || ua.includes('Android');
+    if (isMobile) {
+      const hasStandaloneBrowserIndicator = (
+        ua.includes('Safari/') || // Safari indicator
+        ua.includes('CriOS/') || // Chrome iOS
+        ua.includes('FxiOS/') || // Firefox iOS
+        (ua.includes('Chrome/') && !ua.includes('wv')) // Chrome Android (not webview)
+      );
+
+      // If mobile and no standalone browser indicators, likely webview
+      return !hasStandaloneBrowserIndicator;
+    }
+
+    // Desktop browsers are fine
+    return false;
   };
 
   useEffect(() => {
@@ -39,6 +63,16 @@ export default function JoinTokenPage() {
     }
     handleJoinFlow();
   }, []);
+
+  const copyLinkToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
 
   const handleJoinFlow = async () => {
     try {
@@ -132,18 +166,24 @@ export default function JoinTokenPage() {
             </div>
             <h1 className="text-xl font-bold mb-2">Open in Browser</h1>
             <p className="text-gray-600 mb-4">
-              For security, please open this link in Safari or Chrome instead of this in-app browser.
+              For security, Google requires this link to be opened in Safari or Chrome, not in an embedded browser.
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 text-left">
-              <p className="text-sm text-gray-700 font-semibold mb-2">How to open in Safari/Chrome:</p>
-              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
-                <li>Tap the three dots (•••) or share icon</li>
-                <li>Select &quot;Open in Safari&quot; or &quot;Open in Chrome&quot;</li>
-                <li>Come back here and scan the QR code again</li>
+              <p className="text-sm text-gray-700 font-semibold mb-2">How to fix this:</p>
+              <ol className="text-sm text-gray-600 space-y-2 list-decimal list-inside">
+                <li>Look for &quot;Open in Safari&quot; or &quot;Open in Chrome&quot; button</li>
+                <li>Or tap the share/menu icon (•••) and select a browser</li>
+                <li>Or tap the button below to copy the link</li>
               </ol>
             </div>
-            <div className="text-xs text-gray-500 mt-4">
-              URL: {typeof window !== 'undefined' ? window.location.href : ''}
+            <button
+              onClick={copyLinkToClipboard}
+              className="btn btn-primary w-full mb-4"
+            >
+              {copied ? '✓ Copied!' : '📋 Copy Link to Clipboard'}
+            </button>
+            <div className="text-xs text-gray-500 break-all">
+              {typeof window !== 'undefined' ? window.location.href : ''}
             </div>
           </>
         )}
