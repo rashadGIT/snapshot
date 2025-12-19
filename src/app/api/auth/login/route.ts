@@ -7,6 +7,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { generatePKCE, getCognitoLoginUrl } from '@/lib/auth/cognito';
 import { cookies } from 'next/headers';
 
+// Force dynamic rendering (don't prerender at build time)
+export const dynamic = 'force-dynamic';
+
 export async function GET(_request: NextRequest) {
   try {
     // Generate PKCE challenge
