@@ -122,14 +122,23 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="container-safe py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Snapspot</h1>
-              <p className="text-sm text-gray-600">
-                {user.activeRole === 'REQUESTER' ? 'Requester' : 'Helper'} Dashboard
-              </p>
+          {/* Mobile: Stacked Layout, Desktop: Horizontal */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            {/* Row 1: Title + Sign Out */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold">Snapspot</h1>
+                <p className="text-xs sm:text-sm text-gray-600">
+                  {user.activeRole === 'REQUESTER' ? 'Requester' : 'Helper'} Dashboard
+                </p>
+              </div>
+              <button onClick={handleLogout} className="btn btn-secondary text-sm md:hidden">
+                Sign Out
+              </button>
             </div>
-            <div className="flex items-center gap-3">
+
+            {/* Row 2: Role Switcher + Email + Sign Out (desktop) */}
+            <div className="flex items-center gap-3 flex-wrap">
               {/* Role Switcher */}
               {user.roles.length > 1 && (
                 <div className="flex gap-2 bg-gray-100 rounded-lg p-1">
@@ -166,8 +175,8 @@ export default function DashboardPage() {
                 </button>
               )}
 
-              <span className="text-sm text-gray-600">{user.email}</span>
-              <button onClick={handleLogout} className="btn btn-secondary text-sm">
+              <span className="text-xs sm:text-sm text-gray-600 truncate max-w-[200px]">{user.email}</span>
+              <button onClick={handleLogout} className="btn btn-secondary text-sm hidden md:block">
                 Sign Out
               </button>
             </div>
