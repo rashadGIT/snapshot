@@ -72,8 +72,14 @@ export async function GET(request: NextRequest) {
     logger.info('Looking for upload', { s3Key, userId });
 
     // Find the upload record to get the job ID
+    // The s3Key could be either the main file key OR a thumbnail key
     const upload = await prisma.upload.findFirst({
-      where: { s3Key },
+      where: {
+        OR: [
+          { s3Key },
+          { thumbnailKey: s3Key },
+        ],
+      },
       include: {
         job: {
           include: {
