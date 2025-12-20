@@ -67,7 +67,13 @@ export async function POST(request: NextRequest) {
       const zodError = error as { errors: Array<{ message: string }> };
       return badRequestResponse(zodError.errors[0].message);
     }
+    // Log detailed error information
     logger.error('Pre-signed URL generation failed:', error);
+    logger.error('Error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      type: error?.constructor?.name,
+    });
     return serverErrorResponse();
   }
 }

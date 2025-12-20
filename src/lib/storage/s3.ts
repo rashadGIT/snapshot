@@ -16,6 +16,16 @@ const AWS_ENDPOINT_URL = process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL
 function getRequiredEnv(primary: string, fallback: string): string {
   const value = process.env[primary] || process.env[fallback];
   if (!value) {
+    // Debug logging to help diagnose missing env vars in production
+    console.error(`Missing environment variable. Checked ${primary} and ${fallback}`);
+    console.error('Available S3/AWS env vars:', {
+      S3_BUCKET: !!process.env.S3_BUCKET,
+      AWS_S3_BUCKET: !!process.env.AWS_S3_BUCKET,
+      S3_ACCESS_KEY_ID: !!process.env.S3_ACCESS_KEY_ID,
+      AWS_ACCESS_KEY_ID: !!process.env.AWS_ACCESS_KEY_ID,
+      S3_SECRET_ACCESS_KEY: !!process.env.S3_SECRET_ACCESS_KEY,
+      AWS_SECRET_ACCESS_KEY: !!process.env.AWS_SECRET_ACCESS_KEY,
+    });
     throw new Error(`${primary} or ${fallback} environment variable is required`);
   }
   return value;
