@@ -8,6 +8,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import QRCode from 'qrcode';
+import { getPublicUrl } from '@/lib/storage/s3';
 import { getPriceAmount, formatPrice } from '@/lib/pricing';
 
 interface Job {
@@ -621,9 +622,9 @@ export default function JobDetailsPage() {
   // const isRequester = currentUser.activeRole === 'REQUESTER';
   const isHelper = currentUser.activeRole === 'HELPER';
 
-  // Generate S3 URL for viewing uploaded files
+  // Generate S3 URL for viewing uploaded files (uses correct URL for environment)
   const getS3Url = (s3Key: string) => {
-    return `http://localhost:4566/snapspot-uploads/${s3Key}`;
+    return getPublicUrl(s3Key);
   };
 
   const submitJobForReview = async () => {
