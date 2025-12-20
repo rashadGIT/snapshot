@@ -8,7 +8,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import QRCode from 'qrcode';
-import { getPublicUrl } from '@/lib/storage/s3';
 import { getPriceAmount, formatPrice } from '@/lib/pricing';
 
 interface Job {
@@ -622,9 +621,18 @@ export default function JobDetailsPage() {
   // const isRequester = currentUser.activeRole === 'REQUESTER';
   const isHelper = currentUser.activeRole === 'HELPER';
 
-  // Generate S3 URL for viewing uploaded files (uses correct URL for environment)
+  // Generate S3 URL for viewing uploaded files (client-safe, uses bucket from upload data)
   const getS3Url = (s3Key: string) => {
-    return getPublicUrl(s3Key);
+    // Get bucket from first upload (all uploads use same bucket)
+    const bucket = job.uploads[0]?.s3Bucket || 'snapspot-uploads-prod';
+
+    // Check if it's LocalStack (development)
+    if (bucket === 'snapspot-uploads') {
+      return `http://localhost:4566/${bucket}/${s3Key}`;
+    }
+
+    // Production S3 URL
+    return `https://${bucket}.s3.us-east-1.amazonaws.com/${s3Key}`;
   };
 
   const submitJobForReview = async () => {
