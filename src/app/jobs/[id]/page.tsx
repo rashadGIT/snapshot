@@ -10,6 +10,98 @@ import { useRouter, useParams } from 'next/navigation';
 import QRCode from 'qrcode';
 import { getPriceAmount, formatPrice } from '@/lib/pricing';
 
+// Secure Image Component - fetches pre-signed URL before displaying
+function SecureImage({ s3Key, alt, className, onClick }: { s3Key: string; alt: string; className?: string; onClick?: () => void }) {
+  const [url, setUrl] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchUrl() {
+      try {
+        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to get download URL');
+        }
+
+        const { url } = await response.json();
+
+        if (!cancelled) {
+          setUrl(url);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchUrl();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [s3Key]);
+
+  if (loading) {
+    return <div className={className} style={{ background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>;
+  }
+
+  if (error || !url) {
+    return <div className={className} style={{ background: '#ffebee', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Error</div>;
+  }
+
+  return <img src={url} alt={alt} className={className} onClick={onClick} />;
+}
+
+// Secure Video Component - fetches pre-signed URL before displaying
+function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; className?: string; controls?: boolean; autoPlay?: boolean }) {
+  const [url, setUrl] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchUrl() {
+      try {
+        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to get download URL');
+        }
+
+        const { url } = await response.json();
+
+        if (!cancelled) {
+          setUrl(url);
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    fetchUrl();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [s3Key]);
+
+  if (loading || !url) {
+    return <div className={className} style={{ background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading video...</div>;
+  }
+
+  return <video key={s3Key} src={url} className={className} controls={controls} autoPlay={autoPlay} />;
+}
+
 interface Job {
   id: string;
   title: string;
@@ -621,20 +713,6 @@ export default function JobDetailsPage() {
   // const isRequester = currentUser.activeRole === 'REQUESTER';
   const isHelper = currentUser.activeRole === 'HELPER';
 
-  // Generate S3 URL for viewing uploaded files (client-safe, uses bucket from upload data)
-  const getS3Url = (s3Key: string) => {
-    // Get bucket from first upload (all uploads use same bucket)
-    const bucket = job.uploads[0]?.s3Bucket || 'snapspot-uploads-prod';
-
-    // Check if it's LocalStack (development)
-    if (bucket === 'snapspot-uploads') {
-      return `http://localhost:4566/${bucket}/${s3Key}`;
-    }
-
-    // Production S3 URL
-    return `https://${bucket}.s3.us-east-1.amazonaws.com/${s3Key}`;
-  };
-
   const submitJobForReview = async () => {
     if (!confirm('Submit this job for review? You won\'t be able to upload more photos after submission.')) {
       return;
@@ -872,16 +950,16 @@ export default function JobDetailsPage() {
                     className="aspect-square bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-gold transition-all cursor-pointer relative"
                   >
                     {upload.fileType.startsWith('image/') ? (
-                      <img
-                        src={getS3Url(upload.s3Key)}
+                      <SecureImage
+                        s3Key={upload.s3Key}
                         alt={upload.fileName}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <>
                         {upload.thumbnailKey ? (
-                          <img
-                            src={getS3Url(upload.thumbnailKey)}
+                          <SecureImage
+                            s3Key={upload.thumbnailKey}
                             alt={upload.fileName}
                             className="w-full h-full object-cover"
                           />
@@ -1009,7 +1087,6 @@ export default function JobDetailsPage() {
             onClose={closeMediaViewer}
             onPrevious={navigatePrevious}
             onNext={navigateNext}
-            getS3Url={getS3Url}
             onDelete={deleteUpload}
             canDelete={job.status !== 'COMPLETED'}
           />
@@ -1222,16 +1299,16 @@ export default function JobDetailsPage() {
                       className="aspect-square bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-gold transition-all cursor-pointer relative"
                     >
                       {upload.fileType.startsWith('image/') ? (
-                        <img
-                          src={getS3Url(upload.s3Key)}
+                        <SecureImage
+                          s3Key={upload.s3Key}
                           alt={upload.fileName}
                           className="w-full h-full object-cover"
                         />
                       ) : (
                         <>
                           {upload.thumbnailKey ? (
-                            <img
-                              src={getS3Url(upload.thumbnailKey)}
+                            <SecureImage
+                              s3Key={upload.thumbnailKey}
                               alt={upload.fileName}
                               className="w-full h-full object-cover"
                             />
@@ -1348,7 +1425,6 @@ export default function JobDetailsPage() {
           onClose={closeMediaViewer}
           onPrevious={navigatePrevious}
           onNext={navigateNext}
-          getS3Url={getS3Url}
           onDelete={deleteUpload}
           canDelete={job.status === 'IN_REVIEW'}
         />
@@ -1364,7 +1440,6 @@ function MediaViewerModal({
   onClose,
   onPrevious,
   onNext,
-  getS3Url,
   onDelete,
   canDelete,
 }: {
@@ -1378,7 +1453,6 @@ function MediaViewerModal({
   onClose: () => void;
   onPrevious: () => void;
   onNext: () => void;
-  getS3Url: (key: string) => string;
   onDelete: (uploadId: string) => void;
   canDelete: boolean;
 }) {
@@ -1446,16 +1520,15 @@ function MediaViewerModal({
         {/* Media Display */}
         <div className="flex-1 flex items-center justify-center mb-4">
           {isVideo ? (
-            <video
-              key={currentUpload.id}
-              src={getS3Url(currentUpload.s3Key)}
+            <SecureVideo
+              s3Key={currentUpload.s3Key}
               controls
               autoPlay
               className="max-w-full max-h-[70vh] rounded-lg"
             />
           ) : (
-            <img
-              src={getS3Url(currentUpload.s3Key)}
+            <SecureImage
+              s3Key={currentUpload.s3Key}
               alt={currentUpload.fileName}
               className="max-w-full max-h-[70vh] object-contain rounded-lg"
             />
@@ -1484,8 +1557,8 @@ function MediaViewerModal({
                 }`}
               >
                 {upload.fileType.startsWith('image/') ? (
-                  <img
-                    src={getS3Url(upload.s3Key)}
+                  <SecureImage
+                    s3Key={upload.s3Key}
                     alt={upload.fileName}
                     className="w-full h-full object-cover"
                   />
