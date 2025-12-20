@@ -8,47 +8,56 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
 
-// S3 Configuration - prioritize S3_* prefixed variables (Amplify compatible)
-const AWS_REGION = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1';
-const AWS_ENDPOINT_URL = process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL; // LocalStack endpoint
+// S3 Configuration - lazy initialization to handle environment variables
+// This ensures variables are read at runtime, not at module load time
+let s3Client: S3Client | null = null;
 
-// Required environment variables with validation
-function getRequiredEnv(primary: string, fallback: string): string {
-  const value = process.env[primary] || process.env[fallback];
-  if (!value) {
-    // Debug logging to help diagnose missing env vars in production
-    console.error(`Missing environment variable. Checked ${primary} and ${fallback}`);
-    console.error('Available S3/AWS env vars:', {
-      S3_BUCKET: !!process.env.S3_BUCKET,
-      AWS_S3_BUCKET: !!process.env.AWS_S3_BUCKET,
-      S3_ACCESS_KEY_ID: !!process.env.S3_ACCESS_KEY_ID,
-      AWS_ACCESS_KEY_ID: !!process.env.AWS_ACCESS_KEY_ID,
-      S3_SECRET_ACCESS_KEY: !!process.env.S3_SECRET_ACCESS_KEY,
-      AWS_SECRET_ACCESS_KEY: !!process.env.AWS_SECRET_ACCESS_KEY,
-    });
-    throw new Error(`${primary} or ${fallback} environment variable is required`);
+function getS3Config() {
+  const AWS_REGION = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1';
+  const AWS_ENDPOINT_URL = process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL;
+  const AWS_S3_BUCKET = process.env.S3_BUCKET || process.env.AWS_S3_BUCKET;
+  const AWS_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID || process.env.AWS_ACCESS_KEY_ID;
+  const AWS_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY || process.env.AWS_SECRET_ACCESS_KEY;
+
+  // Validate required variables
+  if (!AWS_S3_BUCKET) {
+    throw new Error('S3_BUCKET or AWS_S3_BUCKET environment variable is required');
   }
-  return value;
-}
+  if (!AWS_ACCESS_KEY_ID) {
+    throw new Error('S3_ACCESS_KEY_ID or AWS_ACCESS_KEY_ID environment variable is required');
+  }
+  if (!AWS_SECRET_ACCESS_KEY) {
+    throw new Error('S3_SECRET_ACCESS_KEY or AWS_SECRET_ACCESS_KEY environment variable is required');
+  }
 
-const AWS_S3_BUCKET = getRequiredEnv('S3_BUCKET', 'AWS_S3_BUCKET');
-const AWS_ACCESS_KEY_ID = getRequiredEnv('S3_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID');
-const AWS_SECRET_ACCESS_KEY = getRequiredEnv('S3_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY');
-
-// S3 client configuration
-const s3Client = new S3Client({
-  region: AWS_REGION,
-  credentials: {
+  return {
+    region: AWS_REGION,
+    bucket: AWS_S3_BUCKET,
     accessKeyId: AWS_ACCESS_KEY_ID,
     secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  },
-  ...(AWS_ENDPOINT_URL && {
     endpoint: AWS_ENDPOINT_URL,
-    forcePathStyle: true, // Required for LocalStack
-  }),
-  // Disable checksum validation for LocalStack compatibility
-  requestChecksumCalculation: 'WHEN_REQUIRED',
-});
+  };
+}
+
+function getS3Client(): S3Client {
+  if (!s3Client) {
+    const config = getS3Config();
+    s3Client = new S3Client({
+      region: config.region,
+      credentials: {
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.secretAccessKey,
+      },
+      ...(config.endpoint && {
+        endpoint: config.endpoint,
+        forcePathStyle: true, // Required for LocalStack
+      }),
+      // Disable checksum validation for LocalStack compatibility
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+    });
+  }
+  return s3Client;
+}
 
 /**
  * Generate a secure S3 object key for upload
@@ -92,10 +101,12 @@ export async function generatePresignedUploadUrl(
     throw new Error(`Invalid content type: ${contentType}`);
   }
 
+  const config = getS3Config();
+  const client = getS3Client();
   const key = generateS3Key(jobId, filename);
 
   const command = new PutObjectCommand({
-    Bucket: AWS_S3_BUCKET,
+    Bucket: config.bucket,
     Key: key,
     ContentType: contentType,
     // Add metadata for tracking
@@ -108,7 +119,7 @@ export async function generatePresignedUploadUrl(
   });
 
   // Generate pre-signed URL valid for 15 minutes
-  const url = await getSignedUrl(s3Client, command, {
+  const url = await getSignedUrl(client, command, {
     expiresIn: 900,
     // Don't sign checksum headers for LocalStack
     unhoistableHeaders: new Set(['x-amz-checksum-crc32', 'x-amz-sdk-checksum-algorithm']),
@@ -117,7 +128,7 @@ export async function generatePresignedUploadUrl(
   return {
     url,
     key,
-    bucket: AWS_S3_BUCKET,
+    bucket: config.bucket,
   };
 }
 
@@ -127,11 +138,13 @@ export async function generatePresignedUploadUrl(
  * In development with LocalStack, construct direct URL
  */
 export function getPublicUrl(key: string): string {
-  if (AWS_ENDPOINT_URL) {
+  const config = getS3Config();
+
+  if (config.endpoint) {
     // LocalStack URL
-    return `${AWS_ENDPOINT_URL}/${AWS_S3_BUCKET}/${key}`;
+    return `${config.endpoint}/${config.bucket}/${key}`;
   }
 
   // Production S3 URL (use CloudFront in real production)
-  return `https://${AWS_S3_BUCKET}.s3.${AWS_REGION}.amazonaws.com/${key}`;
+  return `https://${config.bucket}.s3.${config.region}.amazonaws.com/${key}`;
 }
