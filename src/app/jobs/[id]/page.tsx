@@ -471,7 +471,7 @@ export default function JobDetailsPage() {
           fileName: file.name,
           fileType: file.type,
           fileSize: file.size,
-          thumbnailKey: thumbnailKey,
+          ...(thumbnailKey && { thumbnailKey }),
         }),
       });
 
