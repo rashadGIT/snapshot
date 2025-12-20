@@ -13,7 +13,7 @@ const AWS_REGION = process.env.S3_REGION || process.env.AWS_REGION || 'us-east-1
 const AWS_ENDPOINT_URL = process.env.S3_ENDPOINT || process.env.AWS_ENDPOINT_URL; // LocalStack endpoint
 
 // Required environment variables with validation
-function getRequiredEnv(primary: string, fallback: string, name: string): string {
+function getRequiredEnv(primary: string, fallback: string): string {
   const value = process.env[primary] || process.env[fallback];
   if (!value) {
     throw new Error(`${primary} or ${fallback} environment variable is required`);
@@ -21,9 +21,9 @@ function getRequiredEnv(primary: string, fallback: string, name: string): string
   return value;
 }
 
-const AWS_S3_BUCKET = getRequiredEnv('S3_BUCKET', 'AWS_S3_BUCKET', 'S3 Bucket');
-const AWS_ACCESS_KEY_ID = getRequiredEnv('S3_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID', 'Access Key ID');
-const AWS_SECRET_ACCESS_KEY = getRequiredEnv('S3_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY', 'Secret Access Key');
+const AWS_S3_BUCKET = getRequiredEnv('S3_BUCKET', 'AWS_S3_BUCKET');
+const AWS_ACCESS_KEY_ID = getRequiredEnv('S3_ACCESS_KEY_ID', 'AWS_ACCESS_KEY_ID');
+const AWS_SECRET_ACCESS_KEY = getRequiredEnv('S3_SECRET_ACCESS_KEY', 'AWS_SECRET_ACCESS_KEY');
 
 // S3 client configuration
 const s3Client = new S3Client({
