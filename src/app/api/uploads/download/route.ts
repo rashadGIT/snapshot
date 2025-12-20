@@ -35,6 +35,11 @@ function getS3Config() {
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
   const idToken = cookieStore.get('id_token')?.value;
+  logger.info('getAuthRequest: Cookie check', {
+    hasIdToken: !!idToken,
+    tokenLength: idToken?.length || 0,
+    allCookies: cookieStore.getAll().map(c => c.name),
+  });
   const headers = new Headers(request.headers);
   if (idToken) {
     headers.set('Authorization', `Bearer ${idToken}`);
