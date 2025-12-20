@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     return unauthorizedResponse('Authentication required');
   }
 
-  const userId = auth.user.cognitoSub;
+  const userId = auth.user.id;  // Use database user ID, not cognitoSub
 
   try {
     const { searchParams } = new URL(request.url);
