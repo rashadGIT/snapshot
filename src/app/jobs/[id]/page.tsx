@@ -21,7 +21,9 @@ function SecureImage({ s3Key, alt, className, onClick }: { s3Key: string; alt: s
 
     async function fetchUrl() {
       try {
-        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`);
+        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`, {
+          credentials: 'include',
+        });
 
         if (!response.ok) {
           throw new Error('Failed to get download URL');
@@ -69,7 +71,9 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
 
     async function fetchUrl() {
       try {
-        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`);
+        const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`, {
+          credentials: 'include',
+        });
 
         if (!response.ok) {
           throw new Error('Failed to get download URL');

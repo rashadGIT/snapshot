@@ -47,6 +47,10 @@ export async function GET(request: NextRequest) {
   const auth = await authenticateRequest(authRequest);
 
   if (!auth) {
+    logger.error('Authentication failed for download request', {
+      hasAuthHeader: !!request.headers.get('authorization'),
+      hasCookie: !!(await cookies()).get('id_token'),
+    });
     return unauthorizedResponse('Authentication required');
   }
 
