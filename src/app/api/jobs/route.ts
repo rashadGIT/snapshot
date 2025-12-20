@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
 
     return Response.json({ job }, { status: 201 });
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError' && 'errors' in error) {
       const zodError = error as { errors: Array<{ message: string }> };
       return badRequestResponse(zodError.errors[0].message);
     }

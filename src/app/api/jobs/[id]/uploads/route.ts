@@ -86,7 +86,7 @@ export async function POST(
     logger.debug('[Upload API] Success!');
     return Response.json({ upload });
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError' && 'errors' in error) {
       const zodError = error as { errors: Array<{ message: string }> };
       logger.error('[Upload API] Validation error:', zodError.errors);
       return badRequestResponse(zodError.errors[0].message);
