@@ -69,6 +69,8 @@ export async function GET(request: NextRequest) {
       return badRequestResponse('s3Key parameter is required');
     }
 
+    logger.info('Looking for upload', { s3Key, userId });
+
     // Find the upload record to get the job ID
     const upload = await prisma.upload.findFirst({
       where: { s3Key },
@@ -87,6 +89,15 @@ export async function GET(request: NextRequest) {
     });
 
     if (!upload) {
+      // Log all uploads to see what's in the database
+      const allUploads = await prisma.upload.findMany({
+        select: { s3Key: true, id: true },
+        take: 5,
+      });
+      logger.error('Upload not found', {
+        requestedKey: s3Key,
+        sampleUploads: allUploads,
+      });
       return unauthorizedResponse('Upload not found');
     }
 
