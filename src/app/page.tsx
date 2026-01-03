@@ -90,7 +90,17 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="container-safe py-8 text-center text-gray-500">
-        <p className="text-sm">© 2025 Snapspot. Built with Next.js and AWS.</p>
+        <p className="text-sm">© 2025 Snapspot.</p>
+        <p className="text-xs mt-2">
+          <a
+            href="https://master.d8lyv49zhamke.amplifyapp.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-gray-700 transition-colors"
+          >
+            Built by AutoMagicLy
+          </a>
+        </p>
       </footer>
     </main>
   );
