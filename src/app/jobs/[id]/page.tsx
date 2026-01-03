@@ -1092,7 +1092,7 @@ export default function JobDetailsPage() {
             onPrevious={navigatePrevious}
             onNext={navigateNext}
             onDelete={deleteUpload}
-            canDelete={job.status !== 'COMPLETED'}
+            canDelete={job.status !== 'COMPLETED' && (isHelper && job.status !== 'IN_REVIEW')}
           />
         )}
       </main>

@@ -1,0 +1,199 @@
+@media print {
+  @page {
+    size: letter;
+    margin: 0.75in;
+  }
+
+  body {
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  h1 {
+    font-size: 18pt;
+    page-break-after: avoid;
+    margin-top: 0;
+  }
+
+  h2 {
+    font-size: 14pt;
+    page-break-after: avoid;
+    border-bottom: 2px solid #333;
+    padding-bottom: 4pt;
+    margin-top: 16pt;
+  }
+
+  h3 {
+    font-size: 12pt;
+    page-break-after: avoid;
+    margin-top: 12pt;
+  }
+
+  h4 {
+    font-size: 11pt;
+    page-break-after: avoid;
+  }
+
+  table {
+    page-break-inside: avoid;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+
+  thead {
+    background-color: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 6pt;
+    text-align: left;
+  }
+
+  th {
+    font-weight: bold;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  ul, ol {
+    page-break-inside: avoid;
+  }
+
+  pre {
+    font-size: 8pt;
+    background-color: #f5f5f5 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 8pt;
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  code {
+    background-color: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 2pt 4pt;
+    font-size: 9pt;
+  }
+}
+
+@media screen {
+  body {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+  }
+
+  h1 {
+    color: #000;
+    border-bottom: 3px solid #d4af37;
+    padding-bottom: 10px;
+  }
+
+  h2 {
+    color: #222;
+    border-bottom: 2px solid #666;
+    padding-bottom: 8px;
+    margin-top: 32px;
+  }
+
+  h3 {
+    color: #333;
+    margin-top: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+
+  thead {
+    background-color: #f0f0f0;
+  }
+
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+  }
+
+  th {
+    font-weight: 600;
+    background-color: #f8f8f8;
+  }
+
+  tr:nth-child(even) {
+    background-color: #fafafa;
+  }
+
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+
+  code {
+    background-color: #f4f4f4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 13px;
+  }
+
+  pre {
+    background-color: #f6f8fa;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid #e1e4e8;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+  }
+
+  blockquote {
+    border-left: 4px solid #d4af37;
+    margin: 16px 0;
+    padding-left: 16px;
+    color: #666;
+  }
+
+  a {
+    color: #0366d6;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  hr {
+    border: none;
+    border-top: 2px solid #e1e4e8;
+    margin: 24px 0;
+  }
+
+  .checkbox {
+    margin-right: 8px;
+  }
+}
+
+/* Checkbox styling for both print and screen */
+input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin-right: 8px;
+  cursor: pointer;
+}

@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Snapspot Development Roadmap &amp; Cost Analysis</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="pdf-style.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Snapspot Development Roadmap &amp; Cost Analysis</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#snapspot-development-roadmap-cost-analysis"
+id="toc-snapspot-development-roadmap-cost-analysis">Snapspot Development
+Roadmap &amp; Cost Analysis</a>
+<ul>
+<li><a href="#executive-summary" id="toc-executive-summary">Executive
+Summary</a></li>
+<li><a href="#total-project-cost-estimates"
+id="toc-total-project-cost-estimates">Total Project Cost
+Estimates</a></li>
+<li><a href="#accelerated-development-options"
+id="toc-accelerated-development-options">Accelerated Development
+Options</a></li>
+<li><a href="#mobile-strategy-native-app-vs-pwa-vs-web"
+id="toc-mobile-strategy-native-app-vs-pwa-vs-web">Mobile Strategy:
+Native App vs PWA vs Web</a></li>
+<li><a href="#detailed-feature-breakdown"
+id="toc-detailed-feature-breakdown">Detailed Feature Breakdown</a></li>
+<li><a href="#current-technical-assessment"
+id="toc-current-technical-assessment">Current Technical
+Assessment</a></li>
+<li><a href="#technology-stack" id="toc-technology-stack">Technology
+Stack</a></li>
+<li><a href="#key-files-reference" id="toc-key-files-reference">Key
+Files Reference</a></li>
+<li><a href="#risk-assessment" id="toc-risk-assessment">Risk
+Assessment</a></li>
+<li><a href="#recommended-development-approach"
+id="toc-recommended-development-approach">Recommended Development
+Approach</a></li>
+<li><a href="#developer-profile-recommendations"
+id="toc-developer-profile-recommendations">Developer Profile
+Recommendations</a></li>
+<li><a href="#monthly-budget-planning"
+id="toc-monthly-budget-planning">Monthly Budget Planning</a></li>
+<li><a href="#alternative-scenarios"
+id="toc-alternative-scenarios">Alternative Scenarios</a></li>
+<li><a href="#success-metrics-kpis"
+id="toc-success-metrics-kpis">Success Metrics &amp; KPIs</a></li>
+<li><a href="#payment-terms-milestones"
+id="toc-payment-terms-milestones">Payment Terms &amp;
+Milestones</a></li>
+<li><a href="#ongoing-costs-post-development"
+id="toc-ongoing-costs-post-development">Ongoing Costs
+(Post-Development)</a></li>
+<li><a href="#appendix-detailed-technical-specifications"
+id="toc-appendix-detailed-technical-specifications">Appendix: Detailed
+Technical Specifications</a></li>
+<li><a href="#document-version-history"
+id="toc-document-version-history">Document Version History</a></li>
+<li><a href="#how-to-use-this-document"
+id="toc-how-to-use-this-document">How to Use This Document</a></li>
+<li><a href="#questions-or-clarifications"
+id="toc-questions-or-clarifications">Questions or
+Clarifications?</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="snapspot-development-roadmap-cost-analysis">Snapspot Development
+Roadmap &amp; Cost Analysis</h1>
+<p><strong>Project Assessment Date:</strong> January 1, 2026
+<strong>Current Status:</strong> Proof of Concept (POC) Complete - Ready
+for Paid Development Phase</p>
+<hr />
+<h2 id="executive-summary">Executive Summary</h2>
+<h3 id="current-state">Current State</h3>
+<p>Snapspot is a <strong>mobile-first platform connecting content
+creators with photographers</strong> for real-time event capture. The
+POC demonstrates: - ✅ Complete authentication flow (AWS Cognito) - ✅
+Job creation and management workflow - ✅ QR code-based job acceptance -
+✅ Photo/video capture and upload to S3 - ✅ Review and approval
+workflow - ✅ Role-based access control (Requester/Helper)</p>
+<p><strong>Core functionality is ~70% complete.</strong> Remaining work
+focuses on production hardening, payment integration, and user
+experience enhancements.</p>
+<hr />
+<h2 id="total-project-cost-estimates">Total Project Cost Estimates</h2>
+<h3 id="by-developer-experience-level">By Developer Experience
+Level</h3>
+<table>
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 20%" />
+<col style="width: 19%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Developer Level</th>
+<th>Hourly Rate</th>
+<th>Total Cost</th>
+<th>Timeline (Part-Time)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Junior Developer</strong></td>
+<td>$50-75/hr</td>
+<td><strong>$51,400 - $77,100</strong></td>
+<td>60-70 weeks (~14-16 months)</td>
+</tr>
+<tr>
+<td><strong>Mid-Level Developer</strong></td>
+<td>$75-125/hr</td>
+<td><strong>$77,100 - $128,500</strong></td>
+<td>51-60 weeks (~12-14 months)</td>
+</tr>
+<tr>
+<td><strong>Senior Developer</strong></td>
+<td>$125-200/hr</td>
+<td><strong>$128,500 - $205,600</strong></td>
+<td>45-51 weeks (~10-12 months)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Recommended:</strong> Mid-level developer at <strong>$100/hr
+= $102,800 total</strong> over 51 weeks part-time (20 hrs/week)</p>
+<h3 id="cost-by-priority-phase">Cost by Priority Phase</h3>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 30%" />
+<col style="width: 28%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Hours</th>
+<th>Cost @ $100/hr</th>
+<th>Timeline (PT)</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Phase 0: PWA Conversion</strong></td>
+<td>60</td>
+<td>$6,000</td>
+<td>3 weeks</td>
+<td>🟡 Recommended First</td>
+</tr>
+<tr>
+<td><strong>Phase 1: Production Readiness</strong></td>
+<td>92</td>
+<td>$9,200</td>
+<td>4.6 weeks</td>
+<td>🔴 Not Started</td>
+</tr>
+<tr>
+<td><strong>Phase 2: Revenue Features</strong></td>
+<td>336</td>
+<td>$33,600</td>
+<td>16.8 weeks</td>
+<td>🔴 Not Started</td>
+</tr>
+<tr>
+<td><strong>Phase 3: Scale &amp; UX</strong></td>
+<td>332</td>
+<td>$33,200</td>
+<td>16.6 weeks</td>
+<td>🔴 Not Started</td>
+</tr>
+<tr>
+<td><strong>Phase 4: Enterprise Ready</strong></td>
+<td>268</td>
+<td>$26,800</td>
+<td>13.4 weeks</td>
+<td>🔴 Not Started</td>
+</tr>
+<tr>
+<td><strong>Phase 5A: Native Apps (Optional)</strong></td>
+<td>400</td>
+<td>$80,000</td>
+<td>20 weeks</td>
+<td>⚪ Only if 5K+ users</td>
+</tr>
+<tr>
+<td><strong>Phase 5B: Capacitor (Alternative)</strong></td>
+<td>175</td>
+<td>$35,000</td>
+<td>9 weeks</td>
+<td>⚪ Alternative to 5A</td>
+</tr>
+<tr>
+<td><strong>TOTAL (Core)</strong></td>
+<td><strong>1,088</strong></td>
+<td><strong>$108,800</strong></td>
+<td><strong>54 weeks</strong></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>TOTAL (w/ Native)</strong></td>
+<td><strong>1,488</strong></td>
+<td><strong>$188,800</strong></td>
+<td><strong>74 weeks</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="accelerated-development-options">Accelerated Development
+Options</h2>
+<h3 id="option-1-pwa-launch-fastest-to-market">Option 1: PWA Launch
+(Fastest to Market)</h3>
+<p><strong>Scope:</strong> PWA + Critical security fixes only -
+<strong>Hours:</strong> 152 - <strong>Cost:</strong> $15,200 -
+<strong>Timeline:</strong> 8 weeks part-time - <strong>Outcome:</strong>
+Installable web app, basic security, no payments yet</p>
+<h3 id="option-2-mvp-launch-recommended-start">Option 2: MVP Launch
+(Recommended Start)</h3>
+<p><strong>Scope:</strong> PWA + Critical + Payment integration -
+<strong>Hours:</strong> 232 - <strong>Cost:</strong> $23,200 -
+<strong>Timeline:</strong> 12 weeks part-time (~3 months) -
+<strong>Outcome:</strong> Can accept paying customers with installable
+app</p>
+<h3 id="option-3-full-featured-v1">Option 3: Full Featured v1</h3>
+<p><strong>Scope:</strong> PWA + Phases 1-2 (all high priority) -
+<strong>Hours:</strong> 488 - <strong>Cost:</strong> $48,800 -
+<strong>Timeline:</strong> 24 weeks part-time (~6 months) -
+<strong>Outcome:</strong> Fully competitive product with core
+features</p>
+<h3 id="option-4-production-ready-recommended">Option 4: Production
+Ready (Recommended)</h3>
+<p><strong>Scope:</strong> PWA + Phases 1-3 (no native app) -
+<strong>Hours:</strong> 820 - <strong>Cost:</strong> $82,000 -
+<strong>Timeline:</strong> 41 weeks part-time (~10 months) -
+<strong>Outcome:</strong> Scalable, polished product ready for
+growth</p>
+<h3 id="option-5-enterprise-grade-native">Option 5: Enterprise Grade +
+Native</h3>
+<p><strong>Scope:</strong> Complete roadmap including native apps -
+<strong>Hours:</strong> 1,488 - <strong>Cost:</strong> $148,800 -
+<strong>Timeline:</strong> 74 weeks part-time (~18 months) -
+<strong>Outcome:</strong> Professional platform with iOS/Android
+apps</p>
+<hr />
+<h2 id="mobile-strategy-native-app-vs-pwa-vs-web">Mobile Strategy:
+Native App vs PWA vs Web</h2>
+<h3 id="recommendation-progressive-enhancement-approach">RECOMMENDATION:
+Progressive Enhancement Approach</h3>
+<p><strong>My Strong Recommendation: Start with PWA, go Native only if
+proven market fit</strong></p>
+<h4 id="why-pwa-first">Why PWA First?</h4>
+<ol type="1">
+<li><strong>Your app is already 70% mobile-ready</strong> - Camera, QR
+scanning, responsive design all work</li>
+<li><strong>Lower cost</strong> - $12,000 vs $80,000+ for native</li>
+<li><strong>Faster time to market</strong> - 6 weeks vs 20+ weeks</li>
+<li><strong>Single codebase</strong> - No platform fragmentation</li>
+<li><strong>Instant updates</strong> - No app store approval delays</li>
+<li><strong>Better for MVP testing</strong> - Iterate quickly based on
+user feedback</li>
+</ol>
+<h4 id="when-to-consider-native">When to Consider Native?</h4>
+<ul>
+<li>You’ve validated product-market fit with PWA</li>
+<li>You have 10,000+ active users</li>
+<li>Push notification engagement is critical (iOS Safari
+limitations)</li>
+<li>You need background location tracking</li>
+<li>App Store presence becomes important for trust/discovery</li>
+<li>You have $80,000+ budget for mobile development</li>
+</ul>
+<hr />
+<h3 id="current-mobile-readiness-710">Current Mobile Readiness: 7/10
+⭐</h3>
+<p>Your app already has excellent mobile support:</p>
+<p><strong>✅ What’s Working:</strong> - Full camera photo/video capture
+(MediaDevices API) - QR code scanning and generation - Responsive design
+with safe-area support for notched devices - Touch-friendly UI (48px
+minimum touch targets) - Direct S3 uploads (no server bottleneck) -
+Webview detection (forces native browser)</p>
+<p><strong>❌ What’s Missing:</strong> - PWA manifest.json (not
+installable to home screen) - Service worker (no offline support) - Push
+notification setup - App icons and splash screens - Geolocation API
+integration</p>
+<hr />
+<h3 id="option-comparison-table">Option Comparison Table</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 18%" />
+<col style="width: 22%" />
+<col style="width: 25%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Current Web App</th>
+<th>PWA (Recommended)</th>
+<th>Native iOS + Android</th>
+<th>Hybrid (Capacitor)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Development Cost</strong></td>
+<td>$0 (done)</td>
+<td>$12,000</td>
+<td>$80,000</td>
+<td>$35,000</td>
+</tr>
+<tr>
+<td><strong>Timeline</strong></td>
+<td>N/A</td>
+<td>6 weeks</td>
+<td>20 weeks</td>
+<td>12 weeks</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td>Low</td>
+<td>Low</td>
+<td>High (2 codebases)</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td><strong>Install to Home Screen</strong></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><strong>Offline Support</strong></td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><strong>Push Notifications</strong></td>
+<td>⚠️ Limited</td>
+<td>⚠️ Android: Yes, iOS: Limited</td>
+<td>✅ Full support</td>
+<td>✅ Full support</td>
+</tr>
+<tr>
+<td><strong>App Store Presence</strong></td>
+<td>❌ No</td>
+<td>❌ No</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><strong>Camera Quality</strong></td>
+<td>⚠️ Good</td>
+<td>⚠️ Good</td>
+<td>✅ Excellent</td>
+<td>✅ Excellent</td>
+</tr>
+<tr>
+<td><strong>Background Tasks</strong></td>
+<td>❌ No</td>
+<td>⚠️ Limited</td>
+<td>✅ Yes</td>
+<td>✅ Yes</td>
+</tr>
+<tr>
+<td><strong>Update Speed</strong></td>
+<td>⚡ Instant</td>
+<td>⚡ Instant</td>
+<td>🐌 App Store review</td>
+<td>🐌 App Store review</td>
+</tr>
+<tr>
+<td><strong>Code Reuse</strong></td>
+<td>100%</td>
+<td>95%</td>
+<td>30-40%</td>
+<td>85-90%</td>
+</tr>
+<tr>
+<td><strong>Performance</strong></td>
+<td>⚠️ Good</td>
+<td>✅ Very Good</td>
+<td>✅ Excellent</td>
+<td>✅ Very Good</td>
+</tr>
+<tr>
+<td><strong>Geolocation</strong></td>
+<td>✅ Works</td>
+<td>✅ Works</td>
+<td>✅ Better accuracy</td>
+<td>✅ Better accuracy</td>
+</tr>
+<tr>
+<td><strong>File Access</strong></td>
+<td>⚠️ Limited</td>
+<td>⚠️ Limited</td>
+<td>✅ Full</td>
+<td>✅ Full</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="phase-0-pwa-conversion-recommended-first-step">PHASE 0: PWA
+Conversion (RECOMMENDED FIRST STEP)</h3>
+<p><strong>Total: 60 hours | $6,000 | 3 weeks</strong></p>
+<p>This should be done BEFORE or alongside Phase 1. It’s the highest ROI
+mobile enhancement.</p>
+<h4 id="pwa-implementation-checklist">PWA Implementation Checklist</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Create manifest.json</td>
+<td>App metadata, icons, theme colors, display mode</td>
+<td>4</td>
+<td>$400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Generate PWA icons</td>
+<td>Create 192x192, 512x512 icons + iOS splash screens</td>
+<td>4</td>
+<td>$400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Service worker setup</td>
+<td>Cache static assets, implement offline fallback</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Offline upload queue</td>
+<td>Queue photos/videos when offline, sync when online</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Push notification setup</td>
+<td>Web Push API for Android + fallback for iOS</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Install prompt UI</td>
+<td>Custom “Add to Home Screen” prompt</td>
+<td>4</td>
+<td>$400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Background sync</td>
+<td>Sync uploads and job updates in background</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Outcome:</strong> Users can install your app to their home
+screen, use it offline, and get notifications (Android). Feels like a
+native app.</p>
+<hr />
+<h3
+id="phase-5a-native-mobile-apps-optional---only-if-pwa-proves-success">PHASE
+5A: Native Mobile Apps (OPTIONAL - ONLY IF PWA PROVES SUCCESS)</h3>
+<p><strong>Total: 400 hours | $80,000 | 20 weeks</strong></p>
+<p>Only pursue this after PWA has 5,000+ users and proven
+engagement.</p>
+<h4 id="native-app-development">Native App Development</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 25%" />
+<col style="width: 33%" />
+<col style="width: 17%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Platform</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>iOS App (Swift/SwiftUI)</td>
+<td>Native iOS application</td>
+<td>200</td>
+<td>$40,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Android App (Kotlin)</td>
+<td>Native Android application</td>
+<td>200</td>
+<td>$40,000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What Native Apps Add:</strong> - ✅ Better camera quality
+control (manual focus, exposure, RAW) - ✅ Reliable push notifications
+on iOS - ✅ Background location tracking - ✅ App Store/Play Store
+presence - ✅ Better performance for media processing - ✅ Native UI/UX
+patterns (feels more “right”) - ✅ Biometric authentication - ✅ Better
+offline support</p>
+<p><strong>What You Lose:</strong> - ❌ 2x maintenance burden (iOS +
+Android) - ❌ Slower updates (app store review) - ❌ App store fees
+(15-30% on payments) - ❌ Need separate developer accounts ($99/year
+Apple, $25 one-time Google)</p>
+<hr />
+<h3 id="phase-5b-hybrid-approach-with-capacitor-middle-ground">PHASE 5B:
+Hybrid Approach with Capacitor (MIDDLE GROUND)</h3>
+<p><strong>Total: 175 hours | $35,000 | 9 weeks</strong></p>
+<p>Best of both worlds: Keep your Next.js web app, wrap it in native
+shell.</p>
+<h4 id="capacitor-implementation">Capacitor Implementation</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Capacitor setup</td>
+<td>Configure Capacitor with Next.js static export</td>
+<td>16</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>iOS project setup</td>
+<td>Xcode project, signing, provisioning</td>
+<td>12</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Android project setup</td>
+<td>Android Studio project, signing</td>
+<td>12</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Native camera plugin</td>
+<td>Better camera access than web APIs</td>
+<td>24</td>
+<td>$4,800</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Native push notifications</td>
+<td>Full iOS + Android notification support</td>
+<td>24</td>
+<td>$4,800</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Geolocation plugin</td>
+<td>Background location tracking</td>
+<td>16</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>File system access</td>
+<td>Save/access files natively</td>
+<td>12</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Biometric auth</td>
+<td>Face ID, Touch ID, fingerprint</td>
+<td>8</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>App icon &amp; splash screens</td>
+<td>All required sizes for both platforms</td>
+<td>8</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>App Store submission</td>
+<td>Prepare metadata, screenshots, submit</td>
+<td>16</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Play Store submission</td>
+<td>Prepare metadata, screenshots, submit</td>
+<td>12</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Testing &amp; bug fixes</td>
+<td>Platform-specific testing</td>
+<td>15</td>
+<td>$3,000</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Pros:</strong> - ✅ Reuse 90% of existing Next.js code - ✅
+App Store presence - ✅ Full native API access - ✅ Better notifications
+and camera - ✅ Faster than building from scratch</p>
+<p><strong>Cons:</strong> - ⚠️ Still need to maintain iOS + Android
+builds - ⚠️ Slightly larger app size than pure native - ⚠️ May hit
+performance limits for complex features</p>
+<hr />
+<h3 id="code-examples-pwa-implementation">Code Examples: PWA
+Implementation</h3>
+<h4 id="create-publicmanifest.json">1. Create
+<code>public/manifest.json</code></h4>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode json"><code class="sourceCode json"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;Snapspot - Event Photography Platform&quot;</span><span class="fu">,</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;short_name&quot;</span><span class="fu">:</span> <span class="st">&quot;Snapspot&quot;</span><span class="fu">,</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="st">&quot;Connect with photographers for real-time event capture&quot;</span><span class="fu">,</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;start_url&quot;</span><span class="fu">:</span> <span class="st">&quot;/&quot;</span><span class="fu">,</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;display&quot;</span><span class="fu">:</span> <span class="st">&quot;standalone&quot;</span><span class="fu">,</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;background_color&quot;</span><span class="fu">:</span> <span class="st">&quot;#000000&quot;</span><span class="fu">,</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;theme_color&quot;</span><span class="fu">:</span> <span class="st">&quot;#D4AF37&quot;</span><span class="fu">,</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;orientation&quot;</span><span class="fu">:</span> <span class="st">&quot;portrait&quot;</span><span class="fu">,</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;icons&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;src&quot;</span><span class="fu">:</span> <span class="st">&quot;/icons/icon-192x192.png&quot;</span><span class="fu">,</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;sizes&quot;</span><span class="fu">:</span> <span class="st">&quot;192x192&quot;</span><span class="fu">,</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;image/png&quot;</span><span class="fu">,</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;purpose&quot;</span><span class="fu">:</span> <span class="st">&quot;any maskable&quot;</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;src&quot;</span><span class="fu">:</span> <span class="st">&quot;/icons/icon-512x512.png&quot;</span><span class="fu">,</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;sizes&quot;</span><span class="fu">:</span> <span class="st">&quot;512x512&quot;</span><span class="fu">,</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;image/png&quot;</span><span class="fu">,</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;purpose&quot;</span><span class="fu">:</span> <span class="st">&quot;any maskable&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;categories&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;photography&quot;</span><span class="ot">,</span> <span class="st">&quot;business&quot;</span><span class="ot">,</span> <span class="st">&quot;productivity&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="dt">&quot;screenshots&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;src&quot;</span><span class="fu">:</span> <span class="st">&quot;/screenshots/home.png&quot;</span><span class="fu">,</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;sizes&quot;</span><span class="fu">:</span> <span class="st">&quot;540x720&quot;</span><span class="fu">,</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      <span class="dt">&quot;type&quot;</span><span class="fu">:</span> <span class="st">&quot;image/png&quot;</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span></span></code></pre></div>
+<h4 id="add-to-srcapplayout.tsx">2. Add to
+<code>src/app/layout.tsx</code></h4>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">const</span> metadata<span class="op">:</span> Metadata <span class="op">=</span> {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  manifest<span class="op">:</span> <span class="st">&#39;/manifest.json&#39;</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  appleWebApp<span class="op">:</span> {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    capable<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    statusBarStyle<span class="op">:</span> <span class="st">&#39;black-translucent&#39;</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">:</span> <span class="st">&#39;Snapspot&#39;</span><span class="op">,</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ... existing metadata</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="create-publicsw.js-service-worker">3. Create
+<code>public/sw.js</code> (Service Worker)</h4>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> CACHE_NAME <span class="op">=</span> <span class="st">&#39;snapspot-v1&#39;</span><span class="op">;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> RUNTIME_CACHE <span class="op">=</span> <span class="st">&#39;snapspot-runtime&#39;</span><span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">// Files to cache immediately</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> PRECACHE_URLS <span class="op">=</span> [</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;/&#39;</span><span class="op">,</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;/offline&#39;</span><span class="op">,</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">&#39;/manifest.json&#39;</span><span class="op">,</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>]<span class="op">;</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">// Install: Cache static assets</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>self<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;install&#39;</span><span class="op">,</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="fu">waitUntil</span>(</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    caches<span class="op">.</span><span class="fu">open</span>(CACHE_NAME)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>((cache) <span class="kw">=&gt;</span> cache<span class="op">.</span><span class="fu">addAll</span>(PRECACHE_URLS))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>(() <span class="kw">=&gt;</span> self<span class="op">.</span><span class="fu">skipWaiting</span>())</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">// Activate: Clean up old caches</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>self<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;activate&#39;</span><span class="op">,</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="fu">waitUntil</span>(</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    caches<span class="op">.</span><span class="fu">keys</span>()<span class="op">.</span><span class="fu">then</span>((cacheNames) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="cf">return</span> <span class="bu">Promise</span><span class="op">.</span><span class="fu">all</span>(</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        cacheNames</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span><span class="fu">filter</span>((name) <span class="kw">=&gt;</span> name <span class="op">!==</span> CACHE_NAME <span class="op">&amp;&amp;</span> name <span class="op">!==</span> RUNTIME_CACHE)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>          <span class="op">.</span><span class="fu">map</span>((name) <span class="kw">=&gt;</span> caches<span class="op">.</span><span class="fu">delete</span>(name))</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      )<span class="op">;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    })<span class="op">.</span><span class="fu">then</span>(() <span class="kw">=&gt;</span> self<span class="op">.</span><span class="at">clients</span><span class="op">.</span><span class="fu">claim</span>())</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">// Fetch: Network first, fallback to cache</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>self<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;fetch&#39;</span><span class="op">,</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Skip non-GET requests</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="at">method</span> <span class="op">!==</span> <span class="st">&#39;GET&#39;</span>) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Skip cross-origin requests</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span><span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="at">url</span><span class="op">.</span><span class="fu">startsWith</span>(self<span class="op">.</span><span class="at">location</span><span class="op">.</span><span class="at">origin</span>)) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>  <span class="bu">event</span><span class="op">.</span><span class="fu">respondWith</span>(</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fetch</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span>)</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">then</span>((response) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Clone the response before caching</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> responseClone <span class="op">=</span> response<span class="op">.</span><span class="fu">clone</span>()<span class="op">;</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        caches<span class="op">.</span><span class="fu">open</span>(RUNTIME_CACHE)<span class="op">.</span><span class="fu">then</span>((cache) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>          cache<span class="op">.</span><span class="fu">put</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">,</span> responseClone)<span class="op">;</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> response<span class="op">;</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>      <span class="op">.</span><span class="fu">catch</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Network failed, try cache</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> caches<span class="op">.</span><span class="fu">match</span>(<span class="bu">event</span><span class="op">.</span><span class="at">request</span>)<span class="op">.</span><span class="fu">then</span>((cachedResponse) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (cachedResponse) {</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> cachedResponse<span class="op">;</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>          <span class="co">// Return offline page for navigation requests</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>          <span class="cf">if</span> (<span class="bu">event</span><span class="op">.</span><span class="at">request</span><span class="op">.</span><span class="at">mode</span> <span class="op">===</span> <span class="st">&#39;navigate&#39;</span>) {</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> caches<span class="op">.</span><span class="fu">match</span>(<span class="st">&#39;/offline&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>          }</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>          <span class="cf">return</span> <span class="kw">new</span> <span class="fu">Response</span>(<span class="st">&#39;Network error&#39;</span><span class="op">,</span> {</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>            <span class="dt">status</span><span class="op">:</span> <span class="dv">408</span><span class="op">,</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>            <span class="dt">headers</span><span class="op">:</span> { <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;text/plain&#39;</span> }<span class="op">,</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>          })<span class="op">;</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co">// Background Sync: Queue failed uploads</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>self<span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;sync&#39;</span><span class="op">,</span> (<span class="bu">event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="bu">event</span><span class="op">.</span><span class="at">tag</span> <span class="op">===</span> <span class="st">&#39;upload-queue&#39;</span>) {</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>    <span class="bu">event</span><span class="op">.</span><span class="fu">waitUntil</span>(<span class="fu">processUploadQueue</span>())<span class="op">;</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="kw">async</span> <span class="kw">function</span> <span class="fu">processUploadQueue</span>() {</span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Get queued uploads from IndexedDB</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> db <span class="op">=</span> <span class="cf">await</span> <span class="fu">openDB</span>(<span class="st">&#39;snapspot-uploads&#39;</span><span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> queue <span class="op">=</span> <span class="cf">await</span> db<span class="op">.</span><span class="fu">getAll</span>(<span class="st">&#39;upload-queue&#39;</span>)<span class="op">;</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">const</span> item <span class="kw">of</span> queue) {</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span> {</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>      <span class="kw">const</span> response <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="st">&#39;/api/uploads/presigned-url&#39;</span><span class="op">,</span> {</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>        <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>        <span class="dt">body</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>({ <span class="dt">jobId</span><span class="op">:</span> item<span class="op">.</span><span class="at">jobId</span><span class="op">,</span> <span class="dt">fileName</span><span class="op">:</span> item<span class="op">.</span><span class="at">fileName</span> })<span class="op">,</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a>        <span class="dt">headers</span><span class="op">:</span> { <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span> }<span class="op">,</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>      })<span class="op">;</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (response<span class="op">.</span><span class="at">ok</span>) {</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a>        <span class="kw">const</span> { uploadUrl } <span class="op">=</span> <span class="cf">await</span> response<span class="op">.</span><span class="fu">json</span>()<span class="op">;</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> <span class="fu">fetch</span>(uploadUrl<span class="op">,</span> {</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a>          <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;PUT&#39;</span><span class="op">,</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a>          <span class="dt">body</span><span class="op">:</span> item<span class="op">.</span><span class="at">file</span><span class="op">,</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>        <span class="co">// Remove from queue</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>        <span class="cf">await</span> db<span class="op">.</span><span class="fu">delete</span>(<span class="st">&#39;upload-queue&#39;</span><span class="op">,</span> item<span class="op">.</span><span class="at">id</span>)<span class="op">;</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">catch</span> (error) {</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a>      <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&#39;Upload failed:&#39;</span><span class="op">,</span> error)<span class="op">;</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a>      <span class="co">// Leave in queue for next sync</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="register-service-worker-in-srcapplayout.tsx">4. Register Service
+Worker in <code>src/app/layout.tsx</code></h4>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;use client&#39;</span><span class="op">;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">RootLayout</span>({</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  children<span class="op">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>}<span class="op">:</span> {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  children<span class="op">:</span> React<span class="op">.</span><span class="at">ReactNode</span><span class="op">;</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>}) {</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="st">&#39;serviceWorker&#39;</span> <span class="kw">in</span> <span class="bu">navigator</span>) {</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      <span class="bu">navigator</span><span class="op">.</span><span class="at">serviceWorker</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">register</span>(<span class="st">&#39;/sw.js&#39;</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">then</span>((registration) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>          <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(<span class="st">&#39;SW registered:&#39;</span><span class="op">,</span> registration)<span class="op">;</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">catch</span>((error) <span class="kw">=&gt;</span> {</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>          <span class="bu">console</span><span class="op">.</span><span class="fu">error</span>(<span class="st">&#39;SW registration failed:&#39;</span><span class="op">,</span> error)<span class="op">;</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        })<span class="op">;</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>html lang<span class="op">=</span><span class="st">&quot;en&quot;</span><span class="op">&gt;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>body<span class="op">&gt;</span>{children}<span class="op">&lt;/</span>body<span class="op">&gt;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>html<span class="op">&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="create-install-prompt-component">5. Create Install Prompt
+Component</h4>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">// src/components/InstallPrompt.tsx</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="st">&#39;use client&#39;</span><span class="op">;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { useState<span class="op">,</span> useEffect } <span class="im">from</span> <span class="st">&#39;react&#39;</span><span class="op">;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">InstallPrompt</span>() {</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [deferredPrompt<span class="op">,</span> setDeferredPrompt] <span class="op">=</span> <span class="fu">useState</span><span class="op">&lt;</span><span class="dt">any</span><span class="op">&gt;</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> [showPrompt<span class="op">,</span> setShowPrompt] <span class="op">=</span> <span class="fu">useState</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">useEffect</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> handler <span class="op">=</span> (e<span class="op">:</span> <span class="bu">Event</span>) <span class="kw">=&gt;</span> {</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      e<span class="op">.</span><span class="fu">preventDefault</span>()<span class="op">;</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setDeferredPrompt</span>(e)<span class="op">;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setShowPrompt</span>(<span class="kw">true</span>)<span class="op">;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    }<span class="op">;</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">window</span><span class="op">.</span><span class="fu">addEventListener</span>(<span class="st">&#39;beforeinstallprompt&#39;</span><span class="op">,</span> handler)<span class="op">;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> () <span class="kw">=&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="fu">removeEventListener</span>(<span class="st">&#39;beforeinstallprompt&#39;</span><span class="op">,</span> handler)<span class="op">;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span> [])<span class="op">;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> handleInstall <span class="op">=</span> <span class="kw">async</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="op">!</span>deferredPrompt) <span class="cf">return</span><span class="op">;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    deferredPrompt<span class="op">.</span><span class="fu">prompt</span>()<span class="op">;</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="kw">const</span> { outcome } <span class="op">=</span> <span class="cf">await</span> deferredPrompt<span class="op">.</span><span class="at">userChoice</span><span class="op">;</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (outcome <span class="op">===</span> <span class="st">&#39;accepted&#39;</span>) {</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">setShowPrompt</span>(<span class="kw">false</span>)<span class="op">;</span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">setDeferredPrompt</span>(<span class="kw">null</span>)<span class="op">;</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>showPrompt) <span class="cf">return</span> <span class="kw">null</span><span class="op">;</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;fixed bottom-4 left-4 right-4 bg-gold text-black p-4 rounded-lg shadow-lg&quot;</span><span class="op">&gt;</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>p className<span class="op">=</span><span class="st">&quot;font-semibold mb-2&quot;</span><span class="op">&gt;</span>Install Snapspot<span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>p className<span class="op">=</span><span class="st">&quot;text-sm mb-4&quot;</span><span class="op">&gt;</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        Add to your home <span class="bu">screen</span> <span class="cf">for</span> quick access and offline support<span class="op">.</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;flex gap-2&quot;</span><span class="op">&gt;</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>button</span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>          onClick<span class="op">=</span>{handleInstall}</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>          className<span class="op">=</span><span class="st">&quot;flex-1 bg-black text-gold px-4 py-2 rounded font-semibold&quot;</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;</span></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>          Install</span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>button</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>          onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="fu">setShowPrompt</span>(<span class="kw">false</span>)}</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>          className<span class="op">=</span><span class="st">&quot;px-4 py-2 rounded border border-black&quot;</span></span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;</span></span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>          Not Now</span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb5-58"><a href="#cb5-58" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb5-59"><a href="#cb5-59" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="web-push-notifications-setup">6. Web Push Notifications
+Setup</h4>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co">// src/lib/notifications/push.ts</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">subscribeToPushNotifications</span>() {</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>(<span class="st">&#39;serviceWorker&#39;</span> <span class="kw">in</span> <span class="bu">navigator</span>) <span class="op">||</span> <span class="op">!</span>(<span class="st">&#39;PushManager&#39;</span> <span class="kw">in</span> <span class="bu">window</span>)) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">throw</span> <span class="kw">new</span> <span class="bu">Error</span>(<span class="st">&#39;Push notifications not supported&#39;</span>)<span class="op">;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> registration <span class="op">=</span> <span class="cf">await</span> <span class="bu">navigator</span><span class="op">.</span><span class="at">serviceWorker</span><span class="op">.</span><span class="at">ready</span><span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> subscription <span class="op">=</span> <span class="cf">await</span> registration<span class="op">.</span><span class="at">pushManager</span><span class="op">.</span><span class="fu">subscribe</span>({</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    userVisibleOnly<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    applicationServerKey<span class="op">:</span> <span class="fu">urlBase64ToUint8Array</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="bu">process</span><span class="op">.</span><span class="at">env</span><span class="op">.</span><span class="at">NEXT_PUBLIC_VAPID_PUBLIC_KEY</span><span class="op">!</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>    )<span class="op">,</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Send subscription to backend</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">await</span> <span class="fu">fetch</span>(<span class="st">&#39;/api/push/subscribe&#39;</span><span class="op">,</span> {</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    method<span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    headers<span class="op">:</span> { <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span> }<span class="op">,</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    body<span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(subscription)<span class="op">,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> subscription<span class="op">;</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">urlBase64ToUint8Array</span>(base64String<span class="op">:</span> <span class="dt">string</span>) {</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> padding <span class="op">=</span> <span class="st">&#39;=&#39;</span><span class="op">.</span><span class="fu">repeat</span>((<span class="dv">4</span> <span class="op">-</span> (base64String<span class="op">.</span><span class="at">length</span> <span class="op">%</span> <span class="dv">4</span>)) <span class="op">%</span> <span class="dv">4</span>)<span class="op">;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> base64 <span class="op">=</span> (base64String <span class="op">+</span> padding)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">replace</span>(<span class="ss">/</span><span class="sc">\-</span><span class="ss">/g</span><span class="op">,</span> <span class="st">&#39;+&#39;</span>)</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="op">.</span><span class="fu">replace</span>(<span class="ss">/_/g</span><span class="op">,</span> <span class="st">&#39;/&#39;</span>)<span class="op">;</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rawData <span class="op">=</span> <span class="bu">window</span><span class="op">.</span><span class="fu">atob</span>(base64)<span class="op">;</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> outputArray <span class="op">=</span> <span class="kw">new</span> <span class="bu">Uint8Array</span>(rawData<span class="op">.</span><span class="at">length</span>)<span class="op">;</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> rawData<span class="op">.</span><span class="at">length</span><span class="op">;</span> <span class="op">++</span>i) {</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    outputArray[i] <span class="op">=</span> rawData<span class="op">.</span><span class="fu">charCodeAt</span>(i)<span class="op">;</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> outputArray<span class="op">;</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="create-offline-page">7. Create Offline Page</h4>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">// src/app/offline/page.tsx</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> <span class="kw">function</span> <span class="fu">OfflinePage</span>() {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> (</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;min-h-screen flex items-center justify-center bg-black text-white&quot;</span><span class="op">&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;</span>div className<span class="op">=</span><span class="st">&quot;text-center px-4&quot;</span><span class="op">&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>h1 className<span class="op">=</span><span class="st">&quot;text-4xl font-bold mb-4&quot;</span><span class="op">&gt;</span>You<span class="st">&#39;re Offline&lt;/h1&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>p className<span class="op">=</span><span class="st">&quot;text-gray-400 mb-8&quot;</span><span class="op">&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>          Check your internet connection and <span class="cf">try</span> again<span class="op">.</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>p<span class="op">&gt;</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;</span>button</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>          onClick<span class="op">=</span>{() <span class="kw">=&gt;</span> <span class="bu">window</span><span class="op">.</span><span class="at">location</span><span class="op">.</span><span class="fu">reload</span>()}</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>          className<span class="op">=</span><span class="st">&quot;bg-gold text-black px-6 py-3 rounded-lg font-semibold&quot;</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="op">&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>          Retry</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="op">&lt;/</span>button<span class="op">&gt;</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>      <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="op">&lt;/</span>div<span class="op">&gt;</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  )<span class="op">;</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<hr />
+<h3 id="code-examples-capacitor-setup-if-going-native">Code Examples:
+Capacitor Setup (If Going Native)</h3>
+<h4 id="install-capacitor">1. Install Capacitor</h4>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install @capacitor/core @capacitor/cli</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap init</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install @capacitor/ios @capacitor/android</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap add ios</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap add android</span></code></pre></div>
+<h4 id="update-next.config.js-for-static-export">2. Update
+<code>next.config.js</code> for Static Export</h4>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode javascript"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">/** </span><span class="an">@type</span><span class="co"> {import(&#39;next&#39;).NextConfig} */</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> nextConfig <span class="op">=</span> {</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">output</span><span class="op">:</span> <span class="st">&#39;export&#39;</span><span class="op">,</span>  <span class="co">// Required for Capacitor</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">images</span><span class="op">:</span> {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unoptimized</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>  <span class="co">// Static export doesn&#39;t support Image Optimization</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="dt">trailingSlash</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span>  <span class="co">// Better compatibility with file system routing</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>module<span class="op">.</span><span class="at">exports</span> <span class="op">=</span> nextConfig<span class="op">;</span></span></code></pre></div>
+<h4 id="update-capacitor.config.ts">3. Update
+<code>capacitor.config.ts</code></h4>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { CapacitorConfig } <span class="im">from</span> <span class="st">&#39;@capacitor/cli&#39;</span><span class="op">;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> config<span class="op">:</span> CapacitorConfig <span class="op">=</span> {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  appId<span class="op">:</span> <span class="st">&#39;com.snapspot.app&#39;</span><span class="op">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  appName<span class="op">:</span> <span class="st">&#39;Snapspot&#39;</span><span class="op">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  webDir<span class="op">:</span> <span class="st">&#39;out&#39;</span><span class="op">,</span>  <span class="co">// Next.js static export directory</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  server<span class="op">:</span> {</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    androidScheme<span class="op">:</span> <span class="st">&#39;https&#39;</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  plugins<span class="op">:</span> {</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    SplashScreen<span class="op">:</span> {</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>      launchShowDuration<span class="op">:</span> <span class="dv">2000</span><span class="op">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>      backgroundColor<span class="op">:</span> <span class="st">&#39;#000000&#39;</span><span class="op">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      showSpinner<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    PushNotifications<span class="op">:</span> {</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>      presentationOptions<span class="op">:</span> [<span class="st">&#39;badge&#39;</span><span class="op">,</span> <span class="st">&#39;sound&#39;</span><span class="op">,</span> <span class="st">&#39;alert&#39;</span>]<span class="op">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  }<span class="op">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>}<span class="op">;</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="im">default</span> config<span class="op">;</span></span></code></pre></div>
+<h4 id="install-native-plugins">4. Install Native Plugins</h4>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> install @capacitor/camera @capacitor/geolocation @capacitor/push-notifications @capacitor/filesystem</span></code></pre></div>
+<h4 id="use-native-camera-better-quality">5. Use Native Camera (Better
+Quality)</h4>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode typescript"><code class="sourceCode typescript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">// src/lib/camera/native.ts</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> { Camera<span class="op">,</span> CameraResultType<span class="op">,</span> CameraSource } <span class="im">from</span> <span class="st">&#39;@capacitor/camera&#39;</span><span class="op">;</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="im">export</span> <span class="kw">async</span> <span class="kw">function</span> <span class="fu">takePhoto</span>() {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> image <span class="op">=</span> <span class="cf">await</span> Camera<span class="op">.</span><span class="fu">getPhoto</span>({</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    quality<span class="op">:</span> <span class="dv">95</span><span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    allowEditing<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    resultType<span class="op">:</span> CameraResultType<span class="op">.</span><span class="at">Base64</span><span class="op">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    source<span class="op">:</span> CameraSource<span class="op">.</span><span class="at">Camera</span><span class="op">,</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    saveToGallery<span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    correctOrientation<span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="co">// Convert base64 to blob</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> blob <span class="op">=</span> <span class="cf">await</span> <span class="fu">fetch</span>(<span class="vs">`data:image/jpeg;base64,</span><span class="sc">${</span>image<span class="op">.</span><span class="at">base64String</span><span class="sc">}</span><span class="vs">`</span>)<span class="op">.</span><span class="fu">then</span>(r <span class="kw">=&gt;</span> r<span class="op">.</span><span class="fu">blob</span>())<span class="op">;</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> blob<span class="op">;</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<h4 id="build-and-open-native-projects">6. Build and Open Native
+Projects</h4>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Build Next.js for production</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run build</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Sync web assets to native projects</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap sync</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Open in Xcode (iOS)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap open ios</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Open in Android Studio</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="ex">npx</span> cap open android</span></code></pre></div>
+<hr />
+<h3 id="pwa-testing-checklist">PWA Testing Checklist</h3>
+<table>
+<thead>
+<tr>
+<th>☐</th>
+<th>Test</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Lighthouse PWA Score</td>
+<td>Should be 90+</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Install on Android</td>
+<td>“Add to Home Screen” works</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Install on iOS</td>
+<td>Safari “Add to Home Screen” works</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Offline mode</td>
+<td>App loads without network</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Upload queue</td>
+<td>Photos queue when offline, upload when online</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Push notifications</td>
+<td>Receive test notification (Android)</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Icon display</td>
+<td>Home screen icon looks correct</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Splash screen</td>
+<td>Shows branded splash on launch</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Full screen mode</td>
+<td>No browser UI when launched from home screen</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="my-final-recommendation">My Final Recommendation</h3>
+<p><strong>For Snapspot, follow this path:</strong></p>
+<ol type="1">
+<li><strong>Now (Month 1-2): Implement PWA</strong> - $6,000, 3 weeks
+<ul>
+<li>Highest ROI mobile improvement</li>
+<li>Users can install to home screen</li>
+<li>Offline support for poor connectivity</li>
+<li>Test product-market fit without huge investment</li>
+</ul></li>
+<li><strong>Month 3-12: Focus on core features</strong> - $96,800, 48
+weeks
+<ul>
+<li>Complete Phases 1-3 from main roadmap</li>
+<li>Perfect the web experience</li>
+<li>Gather user feedback and metrics</li>
+</ul></li>
+<li><strong>Year 2 (If Successful): Consider Native/Capacitor</strong> -
+$35,000-80,000
+<ul>
+<li>Only if you have 5,000+ active users</li>
+<li>Only if iOS push notifications are critical</li>
+<li>Only if app store presence drives significant growth</li>
+</ul></li>
+</ol>
+<p><strong>Why This Makes Sense:</strong> - Photography apps benefit
+from web (instant sharing via links) - QR code workflow works perfectly
+in mobile browsers - Upload-heavy apps benefit from PWA background sync
+- You can test business model without $80K mobile investment - If it
+fails, you haven’t wasted money on native apps</p>
+<p><strong>When Native Becomes Worth It:</strong> - You’re processing
+1,000+ jobs/month - Users are requesting “real app” - Push notification
+engagement is measured and critical - You have revenue to justify $80K
+investment - Competition is primarily native apps</p>
+<hr />
+<h2 id="detailed-feature-breakdown">Detailed Feature Breakdown</h2>
+<h3 id="phase-1-production-readiness-critical---do-first">PHASE 1:
+Production Readiness (CRITICAL - DO FIRST)</h3>
+<p><strong>Total: 92 hours | $9,200 | 4.6 weeks</strong></p>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 13%" />
+<col style="width: 11%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Remove hardcoded credentials</td>
+<td>Remove fallback Cognito config from codebase</td>
+<td>2</td>
+<td>$200</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>API rate limiting</td>
+<td>Implement rate limiting middleware for all endpoints</td>
+<td>8</td>
+<td>$800</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>CSRF protection</td>
+<td>Add CSRF token validation beyond sameSite cookies</td>
+<td>6</td>
+<td>$600</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Environment validation</td>
+<td>Startup validation for required env vars</td>
+<td>4</td>
+<td>$400</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Database indexes</td>
+<td>Add indexes on frequently queried fields</td>
+<td>8</td>
+<td>$800</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>HTTPS enforcement</td>
+<td>Force HTTPS in production</td>
+<td>2</td>
+<td>$200</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>E2E test suite</td>
+<td>Core workflow tests (auth, job creation, upload, review)</td>
+<td>40</td>
+<td>$4,000</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Security tests</td>
+<td>XSS, CSRF, injection protection tests</td>
+<td>16</td>
+<td>$1,600</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Error boundaries</td>
+<td>React error boundary for graceful failures</td>
+<td>6</td>
+<td>$600</td>
+<td>Critical</td>
+</tr>
+</tbody>
+</table>
+<p><strong>⚠️ BLOCKER: Cannot accept paid users until Phase 1 is
+complete.</strong></p>
+<hr />
+<h3 id="phase-2-revenue-features-high-priority">PHASE 2: Revenue
+Features (HIGH PRIORITY)</h3>
+<p><strong>Total: 336 hours | $33,600 | 16.8 weeks</strong></p>
+<h4 id="payment-system">Payment System</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Stripe integration</td>
+<td>Payment processing, escrow, payout system</td>
+<td>80</td>
+<td>$8,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Pricing tiers</td>
+<td>Implement flexible pricing system</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<h4 id="social-features">Social Features</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Rating API &amp; UI</td>
+<td>POST /api/jobs/[id]/rate endpoint + UI</td>
+<td>24</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>In-app messaging</td>
+<td>GET/POST message endpoints + real-time UI</td>
+<td>40</td>
+<td>$4,000</td>
+</tr>
+</tbody>
+</table>
+<h4 id="notifications">Notifications</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Email notifications</td>
+<td>SendGrid/SES for job status updates</td>
+<td>24</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Push notifications</td>
+<td>FCM/web push for mobile alerts</td>
+<td>32</td>
+<td>$3,200</td>
+</tr>
+</tbody>
+</table>
+<h4 id="administration">Administration</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Admin dashboard</td>
+<td>User management, job moderation, analytics</td>
+<td>60</td>
+<td>$6,000</td>
+</tr>
+</tbody>
+</table>
+<h4 id="job-management-enhancements">Job Management Enhancements</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Job editing</td>
+<td>PATCH endpoint + edit UI for requesters</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Job cancellation</td>
+<td>Cancel endpoint with refund logic</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Job search &amp; filters</td>
+<td>Full-text search, location radius, price filters</td>
+<td>32</td>
+<td>$3,200</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🎯 Milestone: Can launch public beta and accept paying
+customers after Phase 2.</strong></p>
+<hr />
+<h3 id="phase-3-scale-ux-enhancements-medium-priority">PHASE 3: Scale
+&amp; UX Enhancements (MEDIUM PRIORITY)</h3>
+<p><strong>Total: 332 hours | $33,200 | 16.6 weeks</strong></p>
+<h4 id="user-experience">User Experience</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Map-based discovery</td>
+<td>Interactive map with job pins (Google Maps/Mapbox)</td>
+<td>48</td>
+<td>$4,800</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Image optimization</td>
+<td>Compression, resizing, thumbnail generation</td>
+<td>24</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>CDN integration</td>
+<td>CloudFront for fast asset delivery</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Component refactoring</td>
+<td>Break down 1,500+ line job details page</td>
+<td>20</td>
+<td>$2,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Optimistic updates</td>
+<td>Client-side optimistic UI updates</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Pagination</td>
+<td>Implement pagination for job lists</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+</tbody>
+</table>
+<h4 id="advanced-features">Advanced Features</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Multi-helper support</td>
+<td>Allow multiple helpers per job (Phase 2)</td>
+<td>40</td>
+<td>$4,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>WebSocket support</td>
+<td>Replace polling with WebSockets for live updates</td>
+<td>32</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Retry QR tokens</td>
+<td>Allow multiple attempts if network fails</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+</tbody>
+</table>
+<h4 id="performance-reliability">Performance &amp; Reliability</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Query optimization</td>
+<td>Fix N+1 queries, add field selection</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Connection pooling</td>
+<td>Implement PgBouncer/connection pool</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Redis caching</td>
+<td>Cache frequently accessed job/user data</td>
+<td>24</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Job queue</td>
+<td>Message queue for async tasks (Bull/BullMQ)</td>
+<td>32</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Async thumbnail gen</td>
+<td>Move video thumbnails to background processing</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Orphaned upload cleanup</td>
+<td>Handle failed DB writes after S3 upload</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Performance testing</td>
+<td>Load testing, identify bottlenecks</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<p><strong>🚀 Milestone: App can scale to thousands of users with
+excellent UX.</strong></p>
+<hr />
+<h3 id="phase-4-enterprise-ready-low-priority---polish">PHASE 4:
+Enterprise Ready (LOW PRIORITY - POLISH)</h3>
+<p><strong>Total: 268 hours | $26,800 | 13.4 weeks</strong></p>
+<h4 id="devops-cicd">DevOps &amp; CI/CD</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>GitHub Actions</td>
+<td>Automated testing, linting, type-checking</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Automated deployment</td>
+<td>Deploy to staging/prod on merge</td>
+<td>24</td>
+<td>$2,400</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Docker optimization</td>
+<td>Multi-stage builds, smaller images</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Graceful shutdown</td>
+<td>Proper signal handling for zero-downtime</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+</tbody>
+</table>
+<h4 id="monitoring-observability">Monitoring &amp; Observability</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Error tracking</td>
+<td>Sentry integration for production errors</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Analytics</td>
+<td>Mixpanel/Amplitude for user behavior</td>
+<td>20</td>
+<td>$2,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Logging</td>
+<td>Structured logging (Winston/Pino) + CloudWatch</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Health checks</td>
+<td>Comprehensive health check endpoints</td>
+<td>8</td>
+<td>$800</td>
+</tr>
+</tbody>
+</table>
+<h4 id="testing-quality-assurance">Testing &amp; Quality Assurance</h4>
+<table>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>Component tests</td>
+<td>Test all UI components</td>
+<td>40</td>
+<td>$4,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>API integration tests</td>
+<td>Test all API endpoints</td>
+<td>32</td>
+<td>$3,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Accessibility tests</td>
+<td>axe-core automated testing</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<h4 id="documentation">Documentation</h4>
+<table>
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th>☐</th>
+<th>Feature/Item</th>
+<th>Description</th>
+<th>Hours</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐</td>
+<td>API documentation</td>
+<td>Swagger/OpenAPI spec</td>
+<td>20</td>
+<td>$2,000</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Code documentation</td>
+<td>JSDoc comments on exported functions</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Deployment runbook</td>
+<td>Production deployment guide</td>
+<td>12</td>
+<td>$1,200</td>
+</tr>
+<tr>
+<td>☐</td>
+<td>Architecture docs</td>
+<td>ADRs, system diagrams</td>
+<td>16</td>
+<td>$1,600</td>
+</tr>
+</tbody>
+</table>
+<p><strong>✨ Milestone: Professional-grade platform ready for
+enterprise customers.</strong></p>
+<hr />
+<h2 id="current-technical-assessment">Current Technical Assessment</h2>
+<h3 id="whats-already-working-poc-complete">What’s Already Working (POC
+Complete)</h3>
+<h4 id="authentication-security-95-complete">Authentication &amp;
+Security (95% Complete)</h4>
+<ul>
+<li>✅ AWS Cognito OAuth integration with PKCE flow</li>
+<li>✅ JWT verification using Cognito JWKS endpoint</li>
+<li>✅ Role-based access control (REQUESTER/HELPER)</li>
+<li>✅ Multi-role support (users can switch roles)</li>
+<li>✅ HTTP-only secure cookies</li>
+<li>✅ Input validation with Zod schemas</li>
+</ul>
+<h4 id="core-job-workflow-90-complete">Core Job Workflow (90%
+Complete)</h4>
+<ul>
+<li>✅ Job creation with location, time, content type, pricing</li>
+<li>✅ Job status lifecycle: OPEN → ACCEPTED → IN_PROGRESS → IN_REVIEW →
+COMPLETED</li>
+<li>✅ QR code generation with secure HMAC-SHA256 tokens</li>
+<li>✅ 6-digit short code fallback for manual entry</li>
+<li>✅ Helper job acceptance via QR scan</li>
+<li>✅ Job submission by Helper</li>
+<li>✅ Job approval/rejection by Requester</li>
+</ul>
+<h4 id="file-upload-storage-95-complete">File Upload &amp; Storage (95%
+Complete)</h4>
+<ul>
+<li>✅ Pre-signed S3 URLs for secure uploads</li>
+<li>✅ Client-side direct upload (no server proxying)</li>
+<li>✅ File type validation (images: JPEG, PNG, WebP, HEIC | videos:
+MP4, WebM, MOV, AVI)</li>
+<li>✅ 100MB file size limit</li>
+<li>✅ Automatic video thumbnail generation</li>
+<li>✅ Access control per job and user role</li>
+<li>✅ Secure download URLs (5-minute expiry)</li>
+</ul>
+<h4 id="media-viewing-90-complete">Media Viewing (90% Complete)</h4>
+<ul>
+<li>✅ Gallery grid view with thumbnails</li>
+<li>✅ Full-screen modal viewer</li>
+<li>✅ Video playback support</li>
+<li>✅ Keyboard navigation (arrows, ESC)</li>
+<li>✅ Delete functionality with role-based permissions</li>
+</ul>
+<h4 id="camera-integration-95-complete">Camera Integration (95%
+Complete)</h4>
+<ul>
+<li>✅ Native camera access via MediaDevices API</li>
+<li>✅ Photo capture from live video stream</li>
+<li>✅ Video recording with MediaRecorder</li>
+<li>✅ Recording timer display</li>
+<li>✅ Back camera default on mobile</li>
+</ul>
+<h4 id="uiux-80-complete">UI/UX (80% Complete)</h4>
+<ul>
+<li>✅ Mobile-first responsive design</li>
+<li>✅ Black/White/Gold color scheme</li>
+<li>✅ Role-based dashboards</li>
+<li>✅ Status indicators and badges</li>
+<li>✅ Loading states throughout</li>
+<li>✅ Error message handling</li>
+</ul>
+<h3 id="whats-missing-or-incomplete">What’s Missing or Incomplete</h3>
+<h4 id="critical-gaps-blocks-production-launch">Critical Gaps (Blocks
+Production Launch)</h4>
+<ul>
+<li>❌ Hardcoded Cognito credentials in code (security risk)</li>
+<li>❌ No API rate limiting (DDoS vulnerability)</li>
+<li>❌ No CSRF token validation</li>
+<li>❌ Missing database indexes (performance issue)</li>
+<li>❌ No comprehensive E2E tests</li>
+<li>❌ No error boundaries for React errors</li>
+</ul>
+<h4 id="major-missing-features">Major Missing Features</h4>
+<ul>
+<li>❌ Payment processing (Stripe integration needed)</li>
+<li>❌ Rating system (schema exists, no endpoints)</li>
+<li>❌ Messaging system (schema exists, no endpoints)</li>
+<li>❌ Email/push notifications</li>
+<li>❌ Admin dashboard</li>
+<li>❌ Job editing and cancellation</li>
+<li>❌ Advanced search and filtering</li>
+</ul>
+<h4 id="performance-scale-issues">Performance &amp; Scale Issues</h4>
+<ul>
+<li>❌ No pagination (loads all jobs)</li>
+<li>❌ N+1 query problems</li>
+<li>❌ No caching layer</li>
+<li>❌ No async job processing</li>
+<li>❌ No CDN for media delivery</li>
+</ul>
+<hr />
+<h2 id="technology-stack">Technology Stack</h2>
+<h3 id="frontend">Frontend</h3>
+<ul>
+<li><strong>Framework:</strong> Next.js 14 (App Router)</li>
+<li><strong>Language:</strong> TypeScript (strict mode)</li>
+<li><strong>Styling:</strong> Tailwind CSS</li>
+<li><strong>State:</strong> Zustand</li>
+<li><strong>QR Codes:</strong> html5-qrcode, qrcode</li>
+</ul>
+<h3 id="backend">Backend</h3>
+<ul>
+<li><strong>Runtime:</strong> Node.js 20+</li>
+<li><strong>ORM:</strong> Prisma</li>
+<li><strong>Database:</strong> PostgreSQL 16</li>
+<li><strong>Auth:</strong> AWS Cognito</li>
+<li><strong>Storage:</strong> AWS S3</li>
+<li><strong>Validation:</strong> Zod</li>
+</ul>
+<h3 id="infrastructure">Infrastructure</h3>
+<ul>
+<li><strong>Containerization:</strong> Docker Compose</li>
+<li><strong>Local S3:</strong> LocalStack 3.0</li>
+<li><strong>Testing:</strong> Vitest, Playwright, Testing Library</li>
+</ul>
+<hr />
+<h2 id="key-files-reference">Key Files Reference</h2>
+<h3 id="critical-business-logic">Critical Business Logic</h3>
+<ul>
+<li><code>/src/lib/auth/jwt.ts</code> - JWT verification with JWKS</li>
+<li><code>/src/lib/qr/token.ts</code> - QR token generation/validation
+(line 1-150)</li>
+<li><code>/src/lib/storage/s3.ts</code> - S3 pre-signed URL generation
+(line 1-200)</li>
+<li><code>/src/app/api/jobs/[id]/join/route.ts</code> - Job joining
+flow</li>
+<li><code>/src/app/api/jobs/[id]/submit/route.ts</code> - Helper
+submission</li>
+<li><code>/src/app/api/jobs/[id]/approve/route.ts</code> - Requester
+approval</li>
+</ul>
+<h3 id="main-ui-components">Main UI Components</h3>
+<ul>
+<li><code>/src/app/jobs/[id]/page.tsx</code> - Job details page (1,584
+lines - needs refactoring)</li>
+<li><code>/src/app/dashboard/page.tsx</code> - Dashboard with role
+switching</li>
+<li><code>/src/app/join/[token]/page.tsx</code> - Automatic join
+flow</li>
+<li><code>/src/app/onboarding/role/page.tsx</code> - Role selection</li>
+</ul>
+<h3 id="configuration">Configuration</h3>
+<ul>
+<li><code>/prisma/schema.prisma</code> - Complete data model (8
+models)</li>
+<li><code>/.env.local</code> - Environment configuration</li>
+<li><code>/docker-compose.yml</code> - Local development setup</li>
+</ul>
+<hr />
+<h2 id="risk-assessment">Risk Assessment</h2>
+<h3 id="technical-risks">Technical Risks</h3>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 35%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Impact</th>
+<th>Mitigation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardcoded credentials in production</td>
+<td>High</td>
+<td>Remove fallbacks, use env vars only</td>
+<td>⚠️ Phase 1</td>
+</tr>
+<tr>
+<td>No rate limiting</td>
+<td>High</td>
+<td>Implement rate limiting middleware</td>
+<td>⚠️ Phase 1</td>
+</tr>
+<tr>
+<td>Database performance at scale</td>
+<td>Medium</td>
+<td>Add indexes, implement caching</td>
+<td>⚠️ Phase 1 &amp; 3</td>
+</tr>
+<tr>
+<td>S3 upload failure recovery</td>
+<td>Medium</td>
+<td>Implement orphaned file cleanup</td>
+<td>⚠️ Phase 3</td>
+</tr>
+<tr>
+<td>Video processing blocking</td>
+<td>Low</td>
+<td>Move to background jobs</td>
+<td>⚠️ Phase 3</td>
+</tr>
+</tbody>
+</table>
+<h3 id="business-risks">Business Risks</h3>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 23%" />
+<col style="width: 35%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Impact</th>
+<th>Mitigation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No payment integration</td>
+<td>Critical</td>
+<td>Stripe integration in Phase 2</td>
+<td>⚠️ Phase 2</td>
+</tr>
+<tr>
+<td>Limited user engagement</td>
+<td>Medium</td>
+<td>Add ratings, messaging, notifications</td>
+<td>⚠️ Phase 2</td>
+</tr>
+<tr>
+<td>Poor discoverability</td>
+<td>Medium</td>
+<td>Implement map view and search</td>
+<td>⚠️ Phase 3</td>
+</tr>
+<tr>
+<td>Cannot scale beyond 1:1 jobs</td>
+<td>Medium</td>
+<td>Multi-helper support</td>
+<td>⚠️ Phase 3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="recommended-development-approach">Recommended Development
+Approach</h2>
+<h3 id="immediate-next-steps-week-1-5">Immediate Next Steps (Week
+1-5)</h3>
+<ol type="1">
+<li><strong>Security hardening</strong> - Remove hardcoded credentials,
+add rate limiting</li>
+<li><strong>Database optimization</strong> - Add indexes to frequently
+queried fields</li>
+<li><strong>Testing</strong> - Implement E2E tests for critical
+workflows</li>
+<li><strong>Error handling</strong> - Add error boundaries and improve
+logging</li>
+</ol>
+<h3 id="short-term-goals-month-2-5">Short-term Goals (Month 2-5)</h3>
+<ol type="1">
+<li><strong>Payment integration</strong> - Implement Stripe for
+transactions</li>
+<li><strong>Social features</strong> - Add ratings and messaging</li>
+<li><strong>Notifications</strong> - Email and push notifications</li>
+<li><strong>Admin tools</strong> - Basic admin dashboard for
+moderation</li>
+</ol>
+<h3 id="medium-term-goals-month-6-9">Medium-term Goals (Month 6-9)</h3>
+<ol type="1">
+<li><strong>UX improvements</strong> - Map view, image optimization,
+better search</li>
+<li><strong>Performance</strong> - Caching, pagination, background
+jobs</li>
+<li><strong>Scale features</strong> - Multi-helper jobs, real-time
+updates</li>
+</ol>
+<h3 id="long-term-goals-month-10-12">Long-term Goals (Month 10-12)</h3>
+<ol type="1">
+<li><strong>DevOps maturity</strong> - CI/CD, monitoring, alerting</li>
+<li><strong>Quality assurance</strong> - Comprehensive testing
+suite</li>
+<li><strong>Documentation</strong> - API docs, runbooks, architecture
+diagrams</li>
+</ol>
+<hr />
+<h2 id="developer-profile-recommendations">Developer Profile
+Recommendations</h2>
+<h3 id="for-phase-1-production-readiness">For Phase 1 (Production
+Readiness)</h3>
+<p><strong>Recommended:</strong> Senior developer with security focus -
+Must have: Next.js, PostgreSQL, AWS Cognito/S3, security testing - Nice
+to have: Penetration testing experience - Rate: $125-150/hr</p>
+<h3 id="for-phase-2-revenue-features">For Phase 2 (Revenue
+Features)</h3>
+<p><strong>Recommended:</strong> Mid-Senior full-stack developer - Must
+have: Stripe integration, real-time systems, notification services -
+Nice to have: Payment platform experience - Rate: $100-125/hr</p>
+<h3 id="for-phase-3-4-scale-polish">For Phase 3-4 (Scale &amp;
+Polish)</h3>
+<p><strong>Recommended:</strong> Mid-level full-stack developer - Must
+have: React, Node.js, database optimization - Nice to have: DevOps,
+monitoring tools - Rate: $75-100/hr</p>
+<hr />
+<h2 id="monthly-budget-planning">Monthly Budget Planning</h2>
+<h3 id="conservative-timeline-part-time-developer-100hr">Conservative
+Timeline (Part-Time Developer @ $100/hr)</h3>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 17%" />
+<col style="width: 15%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th>Month</th>
+<th>Phase</th>
+<th>Hours</th>
+<th>Cost</th>
+<th>Cumulative</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Month 1</td>
+<td>Phase 1: Production Readiness</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$8,000</td>
+</tr>
+<tr>
+<td>Month 2</td>
+<td>Phase 1 Complete + Phase 2 Start</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$16,000</td>
+</tr>
+<tr>
+<td>Month 3</td>
+<td>Phase 2: Payment Integration</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$24,000</td>
+</tr>
+<tr>
+<td>Month 4</td>
+<td>Phase 2: Social Features</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$32,000</td>
+</tr>
+<tr>
+<td>Month 5</td>
+<td>Phase 2: Notifications &amp; Admin</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$40,000</td>
+</tr>
+<tr>
+<td>Month 6</td>
+<td>Phase 2 Complete + Phase 3 Start</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$48,000</td>
+</tr>
+<tr>
+<td>Month 7</td>
+<td>Phase 3: UX Enhancements</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$56,000</td>
+</tr>
+<tr>
+<td>Month 8</td>
+<td>Phase 3: Performance &amp; Scale</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$64,000</td>
+</tr>
+<tr>
+<td>Month 9</td>
+<td>Phase 3: Advanced Features</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$72,000</td>
+</tr>
+<tr>
+<td>Month 10</td>
+<td>Phase 3 Complete + Phase 4 Start</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$80,000</td>
+</tr>
+<tr>
+<td>Month 11</td>
+<td>Phase 4: DevOps &amp; Testing</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$88,000</td>
+</tr>
+<tr>
+<td>Month 12</td>
+<td>Phase 4: Documentation &amp; Launch</td>
+<td>80</td>
+<td>$8,000</td>
+<td>$96,000</td>
+</tr>
+<tr>
+<td><strong>Buffer</strong></td>
+<td>Testing, bug fixes, unexpected issues</td>
+<td>68</td>
+<td>$6,800</td>
+<td><strong>$102,800</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Average Monthly Spend:</strong> $8,567 <strong>Peak Monthly
+Spend:</strong> $8,800 <strong>Minimum Monthly Spend:</strong>
+$6,800</p>
+<hr />
+<h2 id="alternative-scenarios">Alternative Scenarios</h2>
+<h3 id="scenario-1-accelerated-development-full-time-developer">Scenario
+1: Accelerated Development (Full-Time Developer)</h3>
+<ul>
+<li><strong>Timeline:</strong> 26 weeks (~6 months)</li>
+<li><strong>Weekly Hours:</strong> 40</li>
+<li><strong>Monthly Cost:</strong> ~$17,000</li>
+<li><strong>Total Cost:</strong> $102,800 (same total, faster
+delivery)</li>
+</ul>
+<h3 id="scenario-2-team-approach-2-developers-part-time">Scenario 2:
+Team Approach (2 Developers Part-Time)</h3>
+<ul>
+<li><strong>Timeline:</strong> 26 weeks (~6 months)</li>
+<li><strong>Developer 1:</strong> Senior (security &amp; payments)</li>
+<li><strong>Developer 2:</strong> Mid-level (features &amp; UX)</li>
+<li><strong>Monthly Cost:</strong> ~$17,000</li>
+<li><strong>Total Cost:</strong> $110,000 (slightly higher due to
+coordination)</li>
+</ul>
+<h3 id="scenario-3-mvp-fast-track">Scenario 3: MVP Fast Track</h3>
+<ul>
+<li><strong>Scope:</strong> Phase 1 + Payment only</li>
+<li><strong>Timeline:</strong> 9 weeks part-time</li>
+<li><strong>Total Cost:</strong> $17,200</li>
+<li><strong>Outcome:</strong> Can launch with basic paid features</li>
+</ul>
+<hr />
+<h2 id="success-metrics-kpis">Success Metrics &amp; KPIs</h2>
+<h3 id="phase-1-completion-criteria">Phase 1 Completion Criteria</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />All security vulnerabilities
+resolved (OWASP Top 10)</label></li>
+<li><label><input type="checkbox" />80%+ E2E test coverage of critical
+paths</label></li>
+<li><label><input type="checkbox" />Database response time &lt; 100ms
+for 95th percentile</label></li>
+<li><label><input type="checkbox" />Zero production errors in staging
+environment</label></li>
+</ul>
+<h3 id="phase-2-completion-criteria">Phase 2 Completion Criteria</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Successful test payment processed
+via Stripe</label></li>
+<li><label><input type="checkbox" />Email/push notifications delivered
+within 30 seconds</label></li>
+<li><label><input type="checkbox" />Admin can moderate jobs and
+users</label></li>
+<li><label><input type="checkbox" />Users can rate and message each
+other</label></li>
+</ul>
+<h3 id="phase-3-completion-criteria">Phase 3 Completion Criteria</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />Page load time &lt; 2 seconds on
+3G</label></li>
+<li><label><input type="checkbox" />Support 1,000+ concurrent
+users</label></li>
+<li><label><input type="checkbox" />95th percentile API response &lt;
+200ms</label></li>
+<li><label><input type="checkbox" />Image delivery via CDN &lt; 500ms
+globally</label></li>
+</ul>
+<h3 id="phase-4-completion-criteria">Phase 4 Completion Criteria</h3>
+<ul class="task-list">
+<li><label><input type="checkbox" />CI/CD pipeline deploys in &lt; 10
+minutes</label></li>
+<li><label><input type="checkbox" />90%+ code coverage</label></li>
+<li><label><input type="checkbox" />Complete API
+documentation</label></li>
+<li><label><input type="checkbox" />Zero-downtime
+deployments</label></li>
+</ul>
+<hr />
+<h2 id="payment-terms-milestones">Payment Terms &amp; Milestones</h2>
+<h3 id="suggested-payment-structure">Suggested Payment Structure</h3>
+<p><strong>Option A: Monthly Retainer</strong> - Pay developer monthly
+for predictable budgeting - $8,000-8,500/month for part-time (80 hrs) -
+Adjust hours as needed</p>
+<p><strong>Option B: Milestone-Based</strong> - Phase 1 Completion:
+$9,200 - Phase 2 Completion: $33,600 - Phase 3 Completion: $33,200 -
+Phase 4 Completion: $26,800</p>
+<p><strong>Option C: Hourly with Cap</strong> - Track hours weekly -
+Invoice every 2 weeks - Set monthly cap at $10,000 - Roll over unused
+hours</p>
+<hr />
+<h2 id="ongoing-costs-post-development">Ongoing Costs
+(Post-Development)</h2>
+<h3 id="infrastructure-monthly">Infrastructure (Monthly)</h3>
+<ul>
+<li><strong>AWS Services:</strong> $200-500 (RDS, S3, CloudFront,
+Cognito)</li>
+<li><strong>Domain &amp; SSL:</strong> $2-10</li>
+<li><strong>Monitoring (Sentry):</strong> $29-99</li>
+<li><strong>Analytics:</strong> $0-299 (based on volume)</li>
+<li><strong>Email (SendGrid):</strong> $0-89 (based on volume)</li>
+<li><strong>Push Notifications:</strong> $0-49</li>
+<li><strong>Total:</strong> $300-1,000/month</li>
+</ul>
+<h3 id="maintenance-quarterly">Maintenance (Quarterly)</h3>
+<ul>
+<li><strong>Security updates:</strong> 8-16 hours ($800-1,600)</li>
+<li><strong>Bug fixes:</strong> 8-20 hours ($800-2,000)</li>
+<li><strong>Performance tuning:</strong> 4-8 hours ($400-800)</li>
+<li><strong>Total:</strong> $2,000-4,400/quarter</li>
+</ul>
+<h3 id="feature-development-ongoing">Feature Development (Ongoing)</h3>
+<ul>
+<li><strong>Budget:</strong> $2,000-5,000/month for continuous
+improvements</li>
+</ul>
+<hr />
+<h2 id="appendix-detailed-technical-specifications">Appendix: Detailed
+Technical Specifications</h2>
+<h3 id="database-schema-8-models">Database Schema (8 Models)</h3>
+<ol type="1">
+<li><strong>User</strong> - Auth, roles, verification status</li>
+<li><strong>Job</strong> - Core job entity with status FSM</li>
+<li><strong>QRToken</strong> - Short-lived join tokens</li>
+<li><strong>Assignment</strong> - Helper-to-Job relationship</li>
+<li><strong>Upload</strong> - Media files with S3 keys</li>
+<li><strong>Message</strong> - In-job messaging (append-only)</li>
+<li><strong>Rating</strong> - Bi-directional ratings (1-5 stars)</li>
+<li><strong>Session</strong> - User sessions (Cognito managed)</li>
+</ol>
+<h3 id="api-endpoints-inventory">API Endpoints Inventory</h3>
+<h4 id="implemented-13-endpoints">Implemented (13 endpoints)</h4>
+<ul>
+<li><code>POST /api/auth/login</code> - Initiate Cognito login</li>
+<li><code>GET /api/auth/callback</code> - OAuth callback handler</li>
+<li><code>POST /api/auth/logout</code> - Clear session</li>
+<li><code>GET /api/auth/me</code> - Get current user</li>
+<li><code>GET /api/jobs</code> - List jobs (role-filtered)</li>
+<li><code>POST /api/jobs</code> - Create job</li>
+<li><code>GET /api/jobs/[id]</code> - Get job details</li>
+<li><code>POST /api/jobs/[id]/join</code> - Join job via QR</li>
+<li><code>GET /api/jobs/[id]/qr</code> - Generate QR code</li>
+<li><code>POST /api/jobs/[id]/submit</code> - Submit job for review</li>
+<li><code>POST /api/jobs/[id]/approve</code> - Approve job</li>
+<li><code>POST /api/uploads/presigned-url</code> - Get S3 upload
+URL</li>
+<li><code>GET /api/uploads/[key]/download</code> - Get download URL</li>
+</ul>
+<h4 id="missing-7-endpoints">Missing (7 endpoints)</h4>
+<ul>
+<li><code>PATCH /api/jobs/[id]</code> - Edit job</li>
+<li><code>DELETE /api/jobs/[id]</code> - Cancel job</li>
+<li><code>POST /api/jobs/[id]/rate</code> - Submit rating</li>
+<li><code>GET /api/jobs/[id]/messages</code> - Get messages</li>
+<li><code>POST /api/jobs/[id]/messages</code> - Send message</li>
+<li><code>DELETE /api/uploads/[id]</code> - Delete upload</li>
+<li><code>GET /api/admin/*</code> - Admin endpoints</li>
+</ul>
+<h3 id="environment-variables-required">Environment Variables
+Required</h3>
+<pre><code># Database
+DATABASE_URL=&quot;postgresql://...&quot;
+
+# AWS Cognito
+COGNITO_USER_POOL_ID=&quot;us-east-1_...&quot;
+COGNITO_CLIENT_ID=&quot;...&quot;
+COGNITO_CLIENT_SECRET=&quot;...&quot;
+COGNITO_REGION=&quot;us-east-1&quot;
+COGNITO_DOMAIN=&quot;...&quot;
+COGNITO_ISSUER=&quot;https://cognito-idp...&quot;
+COGNITO_REDIRECT_URI=&quot;http://localhost:3000/api/auth/callback&quot;
+COGNITO_LOGOUT_URI=&quot;http://localhost:3000&quot;
+
+# AWS S3
+AWS_REGION=&quot;us-east-1&quot;
+AWS_ACCESS_KEY_ID=&quot;...&quot;
+AWS_SECRET_ACCESS_KEY=&quot;...&quot;
+AWS_S3_BUCKET=&quot;...&quot;
+AWS_ENDPOINT_URL=&quot;http://localhost:4566&quot; # LocalStack only
+
+# Application
+NEXT_PUBLIC_APP_URL=&quot;http://localhost:3000&quot;
+NEXT_PUBLIC_COGNITO_DOMAIN=&quot;...&quot;
+NODE_ENV=&quot;development&quot;</code></pre>
+<hr />
+<h2 id="document-version-history">Document Version History</h2>
+<table>
+<colgroup>
+<col style="width: 28%" />
+<col style="width: 18%" />
+<col style="width: 28%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Changes</th>
+<th>Author</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.0</td>
+<td>2026-01-01</td>
+<td>Initial roadmap created from POC assessment</td>
+<td>Claude Code Analysis</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="how-to-use-this-document">How to Use This Document</h2>
+<h3 id="for-project-planning">For Project Planning</h3>
+<ol type="1">
+<li>Review each phase and prioritize based on business needs</li>
+<li>Adjust timelines based on available budget</li>
+<li>Use checkboxes (☐) to track completion</li>
+<li>Update cost estimates as rates change</li>
+</ol>
+<h3 id="for-developer-onboarding">For Developer Onboarding</h3>
+<ol type="1">
+<li>Share this document with potential developers</li>
+<li>Use “Key Files Reference” section for code review</li>
+<li>Reference “Technology Stack” for skill assessment</li>
+<li>Discuss timeline and rate expectations</li>
+</ol>
+<h3 id="for-stakeholder-updates">For Stakeholder Updates</h3>
+<ol type="1">
+<li>Track progress by phase completion percentage</li>
+<li>Report costs against budget monthly</li>
+<li>Use “Success Metrics &amp; KPIs” for milestone reporting</li>
+<li>Update “Status” column as work progresses</li>
+</ol>
+<hr />
+<h2 id="questions-or-clarifications">Questions or Clarifications?</h2>
+<p>For questions about this roadmap: 1. Review the “Current Technical
+Assessment” section 2. Check the “Key Files Reference” for code
+locations 3. Consult the “Risk Assessment” for known issues 4. Contact
+the development team for technical details</p>
+<hr />
+<p><strong>Document End</strong></p>
+<p>Total Pages: ~20 Last Updated: January 1, 2026 Next Review: After
+Phase 1 Completion</p>
+</body>
+</html>
