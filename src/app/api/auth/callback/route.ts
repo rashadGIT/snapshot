@@ -14,17 +14,11 @@ import { logger } from '@/lib/utils/logger';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  // Get APP_URL from environment
-  let APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+  // Get APP_URL from environment - REQUIRED
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
   if (!APP_URL) {
-    // In development/test, fail loudly
-    if (process.env.NODE_ENV !== 'production') {
-      throw new Error('NEXT_PUBLIC_APP_URL environment variable is required');
-    }
-    // In production, use fallback but warn
-    logger.warn('NEXT_PUBLIC_APP_URL not set, using hardcoded fallback');
-    APP_URL = 'https://master.d2sufnimjy7hms.amplifyapp.com';
+    throw new Error('NEXT_PUBLIC_APP_URL environment variable is required');
   }
 
   const searchParams = request.nextUrl.searchParams;
