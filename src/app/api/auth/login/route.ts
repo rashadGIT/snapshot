@@ -38,14 +38,24 @@ export async function GET(_request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   } catch (error) {
     logger.error('Login error:', error);
+
+    // Try to get values directly
+    const cognitoClientId = process.env.COGNITO_CLIENT_ID || process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
+    const cognitoRedirectUri = process.env.COGNITO_REDIRECT_URI || process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
     return NextResponse.json(
       {
         error: 'Login failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         env_check: {
-          hasCognitoClientId: !!(process.env.COGNITO_CLIENT_ID || process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID),
+          COGNITO_CLIENT_ID_value: cognitoClientId?.substring(0, 10) + '...',
+          COGNITO_REDIRECT_URI_value: cognitoRedirectUri?.substring(0, 30) + '...',
+          NEXT_PUBLIC_APP_URL_value: appUrl,
+          hasCognitoClientId: !!cognitoClientId,
           hasCognitoDomain: !!process.env.NEXT_PUBLIC_COGNITO_DOMAIN,
-          hasRedirectUri: !!(process.env.COGNITO_REDIRECT_URI || process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI),
+          hasRedirectUri: !!cognitoRedirectUri,
+          totalEnvKeys: Object.keys(process.env).length,
           allEnvKeys: Object.keys(process.env).filter(k => k.includes('COGNITO') || k.includes('APP_URL')),
         }
       },
