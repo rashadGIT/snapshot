@@ -11,12 +11,20 @@ import { logger } from '@/lib/utils/logger';
 
 // Read env vars at runtime, not at module load time
 function getEnv(key: string): string {
-  const value = process.env[key] || process.env[`NEXT_PUBLIC_${key}`];
+  const directValue = process.env[key];
+  const publicValue = process.env[`NEXT_PUBLIC_${key}`];
+  const value = directValue || publicValue;
 
-  // Debug logging
-  logger.debug(`getEnv('${key}'):`, {
-    directValue: !!process.env[key],
-    publicValue: !!process.env[`NEXT_PUBLIC_${key}`],
+  // Enhanced debug logging
+  logger.info(`getEnv('${key}'):`, {
+    key,
+    directKey: key,
+    publicKey: `NEXT_PUBLIC_${key}`,
+    directValue: directValue?.substring(0, 20),
+    publicValue: publicValue?.substring(0, 20),
+    foundDirect: !!directValue,
+    foundPublic: !!publicValue,
+    finalValue: value?.substring(0, 20),
     found: !!value,
   });
 
