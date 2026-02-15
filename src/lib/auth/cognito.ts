@@ -52,29 +52,42 @@ export function generatePKCE() {
  * Build Cognito Hosted UI login URL
  */
 export function getCognitoLoginUrl(codeChallenge: string): string {
+  // Direct access with NEXT_PUBLIC_ prefix (verified to work in Amplify SSR)
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
+  const redirectUri = process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI;
+  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN;
+
+  if (!clientId || !redirectUri || !domain) {
+    throw new Error(`Missing required environment variables. Has: clientId=${!!clientId}, redirectUri=${!!redirectUri}, domain=${!!domain}`);
+  }
+
   const params = new URLSearchParams({
     response_type: 'code',
-    client_id: getEnv('COGNITO_CLIENT_ID'),
-    redirect_uri: getEnv('COGNITO_REDIRECT_URI'),
+    client_id: clientId,
+    redirect_uri: redirectUri,
     identity_provider: 'Google', // Force Google login
     scope: 'openid email profile',
     code_challenge_method: 'S256',
     code_challenge: codeChallenge,
   });
 
-  return `https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/oauth2/authorize?${params.toString()}`;
+  return `https://${domain}/oauth2/authorize?${params.toString()}`;
 }
 
 /**
  * Build Cognito logout URL
  */
 export function getCognitoLogoutUrl(): string {
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!;
+  const logoutUri = process.env.NEXT_PUBLIC_COGNITO_LOGOUT_URI!;
+  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN!;
+
   const params = new URLSearchParams({
-    client_id: getEnv('COGNITO_CLIENT_ID'),
-    logout_uri: getEnv('COGNITO_LOGOUT_URI'),
+    client_id: clientId,
+    logout_uri: logoutUri,
   });
 
-  return `https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/logout?${params.toString()}`;
+  return `https://${domain}/logout?${params.toString()}`;
 }
 
 /**
@@ -84,16 +97,21 @@ export async function exchangeCodeForTokens(
   code: string,
   codeVerifier: string,
 ): Promise<{ id_token: string; access_token: string; refresh_token: string }> {
+  const clientId = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!;
+  const clientSecret = process.env.NEXT_PUBLIC_COGNITO_CLIENT_SECRET!;
+  const redirectUri = process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI!;
+  const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN!;
+
   const params = new URLSearchParams({
     grant_type: 'authorization_code',
-    client_id: getEnv('COGNITO_CLIENT_ID'),
-    client_secret: getEnv('COGNITO_CLIENT_SECRET'),
+    client_id: clientId,
+    client_secret: clientSecret,
     code,
     code_verifier: codeVerifier,
-    redirect_uri: getEnv('COGNITO_REDIRECT_URI'),
+    redirect_uri: redirectUri,
   });
 
-  const response = await fetch(`https://${getEnv('NEXT_PUBLIC_COGNITO_DOMAIN')}/oauth2/token`, {
+  const response = await fetch(`https://${domain}/oauth2/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
