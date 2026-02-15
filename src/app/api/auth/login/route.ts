@@ -43,9 +43,10 @@ export async function GET(_request: NextRequest) {
         error: 'Login failed',
         details: error instanceof Error ? error.message : 'Unknown error',
         env_check: {
-          hasCognitoClientId: !!process.env.COGNITO_CLIENT_ID,
+          hasCognitoClientId: !!(process.env.COGNITO_CLIENT_ID || process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID),
           hasCognitoDomain: !!process.env.NEXT_PUBLIC_COGNITO_DOMAIN,
-          hasRedirectUri: !!process.env.COGNITO_REDIRECT_URI,
+          hasRedirectUri: !!(process.env.COGNITO_REDIRECT_URI || process.env.NEXT_PUBLIC_COGNITO_REDIRECT_URI),
+          allEnvKeys: Object.keys(process.env).filter(k => k.includes('COGNITO') || k.includes('APP_URL')),
         }
       },
       { status: 500 }
