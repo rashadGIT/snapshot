@@ -7,32 +7,7 @@ import { randomBytes, createHash } from 'crypto';
 import { logger } from '@/lib/utils/logger';
 
 // NOTE: All config values come from environment variables
-// Fallbacks removed - environment variables are REQUIRED
-
-// Read env vars at runtime, not at module load time
-function getEnv(key: string): string {
-  const directValue = process.env[key];
-  const publicValue = process.env[`NEXT_PUBLIC_${key}`];
-  const value = directValue || publicValue;
-
-  // Enhanced debug logging
-  logger.info(`getEnv('${key}'):`, {
-    key,
-    directKey: key,
-    publicKey: `NEXT_PUBLIC_${key}`,
-    directValue: directValue?.substring(0, 20),
-    publicValue: publicValue?.substring(0, 20),
-    foundDirect: !!directValue,
-    foundPublic: !!publicValue,
-    finalValue: value?.substring(0, 20),
-    found: !!value,
-  });
-
-  if (!value) {
-    throw new Error(`Missing environment variable: ${key}. This should be set in Amplify environment variables.`);
-  }
-  return value;
-}
+// Direct access to NEXT_PUBLIC_ prefixed vars (required for Amplify SSR)
 
 /**
  * Generate PKCE code verifier and challenge
