@@ -4,7 +4,6 @@
  */
 
 import { randomBytes, createHash } from 'crypto';
-import { logger } from '@/lib/utils/logger';
 
 // NOTE: All config values come from environment variables
 // Direct access to NEXT_PUBLIC_ prefixed vars (required for Amplify SSR)
