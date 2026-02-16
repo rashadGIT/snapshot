@@ -138,8 +138,8 @@ export async function GET(request: NextRequest) {
     });
 
     // Prefer converted MP4 file for WebM videos (Safari/iOS compatibility)
-    const useConvertedFile = upload.convertedS3Key && upload.fileType === 'video/webm';
-    const finalS3Key = useConvertedFile ? upload.convertedS3Key : s3Key;
+    const useConvertedFile = !!(upload.convertedS3Key && upload.fileType === 'video/webm');
+    const finalS3Key: string = useConvertedFile ? upload.convertedS3Key! : s3Key;
     const contentType = useConvertedFile
       ? (upload.convertedFileType || 'video/mp4')
       : (upload.fileType || 'application/octet-stream');

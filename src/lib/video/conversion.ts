@@ -84,8 +84,8 @@ export async function convertWebmToMp4(
           if (!timedOut && onProgress) {
             onProgress({
               percent: progress.percent || 0,
-              currentTime: progress.timemark || '00:00:00',
-              targetSize: progress.targetSize || '0kB',
+              currentTime: String(progress.timemark || '00:00:00'),
+              targetSize: String(progress.targetSize || '0kB'),
             });
           }
         })

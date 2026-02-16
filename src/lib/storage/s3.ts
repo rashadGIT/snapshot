@@ -39,7 +39,7 @@ function getS3Config() {
   };
 }
 
-function getS3Client(): S3Client {
+export function getS3Client(): S3Client {
   if (!s3Client) {
     const config = getS3Config();
     s3Client = new S3Client({
