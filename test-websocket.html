@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Connection Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .status {
+      padding: 10px 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+      font-weight: 500;
+    }
+    .status.disconnected {
+      background: #fee;
+      color: #c00;
+      border: 1px solid #fcc;
+    }
+    .status.connecting {
+      background: #ffa;
+      color: #660;
+      border: 1px solid #cc6;
+    }
+    .status.connected {
+      background: #efe;
+      color: #060;
+      border: 1px solid #cfc;
+    }
+    .status.error {
+      background: #fee;
+      color: #c00;
+      border: 1px solid #fcc;
+    }
+    button {
+      background: #0070f3;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+    button:hover {
+      background: #0051cc;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .log {
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 15px;
+      margin-top: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+    }
+    .log-entry {
+      margin: 5px 0;
+      padding: 5px;
+      border-left: 3px solid #ddd;
+      padding-left: 10px;
+    }
+    .log-entry.info {
+      border-left-color: #0070f3;
+    }
+    .log-entry.success {
+      border-left-color: #0a0;
+    }
+    .log-entry.error {
+      border-left-color: #c00;
+    }
+    .log-entry.warning {
+      border-left-color: #f90;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+      color: #555;
+    }
+    .info {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+      border-left: 4px solid #0070f3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔌 WebSocket Connection Test</h1>
+    <p>Test your Snapspot WebSocket infrastructure before manual testing.</p>
+
+    <div class="info">
+      <strong>Instructions:</strong><br>
+      1. Log in to your test app to get a JWT token<br>
+      2. Open DevTools → Application → Cookies → Find "id_token"<br>
+      3. Copy the token value and paste it below<br>
+      4. Click "Connect" to test the WebSocket connection
+    </div>
+
+    <label for="token">JWT Token (from id_token cookie):</label>
+    <input
+      type="text"
+      id="token"
+      placeholder="Paste your id_token cookie value here"
+    />
+
+    <label for="jobId">Job ID (optional - for testing joinJob):</label>
+    <input
+      type="text"
+      id="jobId"
+      placeholder="e.g., 123e4567-e89b-12d3-a456-426614174000"
+    />
+
+    <div style="margin-top: 20px;">
+      <button id="connectBtn" onclick="connect()">Connect</button>
+      <button id="joinBtn" onclick="joinJob()" disabled>Join Job</button>
+      <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+      <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <div id="status" class="status disconnected">
+      Status: Disconnected
+    </div>
+
+    <div class="log" id="log">
+      <div class="log-entry info">Ready to connect. Enter your JWT token above.</div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+    const WS_URL = 'wss://z0ndfjj5db.execute-api.us-east-1.amazonaws.com/production';
+
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const entry = document.createElement('div');
+      entry.className = `log-entry ${type}`;
+      const timestamp = new Date().toLocaleTimeString();
+      entry.textContent = `[${timestamp}] ${message}`;
+      logDiv.appendChild(entry);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    function setStatus(text, state) {
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = `Status: ${text}`;
+      statusDiv.className = `status ${state}`;
+    }
+
+    function updateButtons(connected) {
+      document.getElementById('connectBtn').disabled = connected;
+      document.getElementById('disconnectBtn').disabled = !connected;
+      document.getElementById('joinBtn').disabled = !connected;
+    }
+
+    function connect() {
+      const token = document.getElementById('token').value.trim();
+
+      if (!token) {
+        log('❌ Please enter a JWT token', 'error');
+        alert('Please enter your JWT token from the id_token cookie');
+        return;
+      }
+
+      try {
+        log('🔄 Connecting to WebSocket...', 'info');
+        setStatus('Connecting...', 'connecting');
+
+        const url = `${WS_URL}?token=${token}`;
+        ws = new WebSocket(url);
+
+        ws.onopen = (event) => {
+          log('✅ WebSocket connected successfully!', 'success');
+          setStatus('Connected', 'connected');
+          updateButtons(true);
+          log(`📊 Connection ID: ${event.target.url}`, 'info');
+        };
+
+        ws.onmessage = (event) => {
+          log(`📨 Received message: ${event.data}`, 'success');
+          try {
+            const data = JSON.parse(event.data);
+            log(`📦 Parsed event: ${JSON.stringify(data, null, 2)}`, 'info');
+          } catch (e) {
+            log(`📄 Raw message: ${event.data}`, 'info');
+          }
+        };
+
+        ws.onerror = (error) => {
+          log(`❌ WebSocket error: ${error.message || 'Connection error'}`, 'error');
+          setStatus('Error', 'error');
+          updateButtons(false);
+        };
+
+        ws.onclose = (event) => {
+          log(`🔌 WebSocket closed. Code: ${event.code}, Reason: ${event.reason || 'No reason'}`, 'warning');
+          setStatus('Disconnected', 'disconnected');
+          updateButtons(false);
+
+          if (event.code === 1006) {
+            log('⚠️  Abnormal closure - check if token is valid', 'error');
+          } else if (event.code === 1000) {
+            log('✅ Normal closure', 'success');
+          }
+        };
+
+      } catch (error) {
+        log(`❌ Failed to create WebSocket: ${error.message}`, 'error');
+        setStatus('Error', 'error');
+      }
+    }
+
+    function joinJob() {
+      const jobId = document.getElementById('jobId').value.trim();
+
+      if (!jobId) {
+        log('⚠️  Please enter a Job ID first', 'warning');
+        alert('Please enter a Job ID to test the joinJob action');
+        return;
+      }
+
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        log('❌ Not connected to WebSocket', 'error');
+        return;
+      }
+
+      try {
+        const message = JSON.stringify({
+          action: 'joinJob',
+          jobId: jobId
+        });
+
+        ws.send(message);
+        log(`📤 Sent joinJob message: ${message}`, 'info');
+        log('✅ If you see no error, you successfully joined the job room', 'success');
+      } catch (error) {
+        log(`❌ Failed to send message: ${error.message}`, 'error');
+      }
+    }
+
+    function disconnect() {
+      if (ws) {
+        log('🔄 Closing connection...', 'info');
+        ws.close(1000, 'Manual disconnect');
+        ws = null;
+      }
+    }
+
+    function clearLog() {
+      document.getElementById('log').innerHTML = '';
+      log('Log cleared', 'info');
+    }
+  </script>
+</body>
+</html>

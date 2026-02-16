@@ -64,9 +64,16 @@ Resources:
       Environment:
         Variables:
           CONNECTIONS_TABLE: !Ref ConnectionsTable
+          WEBSOCKET_API_ENDPOINT: !Sub 'https://${SnapspotWebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/production'
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ConnectionsTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - 'execute-api:ManageConnections'
+              Resource:
+                - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SnapspotWebSocketApi}/*'
 
   # Lambda: Handle Join Job Action
   WebSocketJoinJobFunction:
@@ -79,9 +86,16 @@ Resources:
       Environment:
         Variables:
           CONNECTIONS_TABLE: !Ref ConnectionsTable
+          WEBSOCKET_API_ENDPOINT: !Sub 'https://${SnapspotWebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/production'
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref ConnectionsTable
+        - Statement:
+            - Effect: Allow
+              Action:
+                - 'execute-api:ManageConnections'
+              Resource:
+                - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${SnapspotWebSocketApi}/*'
 
   # Routes
   ConnectRoute:

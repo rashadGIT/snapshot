@@ -180,6 +180,17 @@ export default function JobDetailsPage() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
 
+  // Week 2: Presence tracking
+  const [onlineUsers, setOnlineUsers] = useState<Map<string, { userName: string; role: string; timestamp: string }>>(new Map());
+
+  // Week 2: Chat messages
+  const [messages, setMessages] = useState<Array<{ id: string; content: string; userId: string; userName: string; createdAt: string }>>([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
+
+  // Week 2: Upload progress
+  const [uploadingUsers, setUploadingUsers] = useState<Map<string, string>>(new Map()); // userId -> userName
+
   // WebSocket connection for real-time updates
   const { isConnected, connectionState } = useJobWebSocket({
     jobId: job?.id || null,
@@ -220,17 +231,40 @@ export default function JobDetailsPage() {
           break;
 
         case 'USER_PRESENCE':
-          // Week 2: Handle presence updates
+          // Update online users tracking
+          setOnlineUsers((prev) => {
+            const updated = new Map(prev);
+            if (event.payload.status === 'online') {
+              updated.set(event.payload.userId, {
+                userName: event.payload.userName,
+                role: event.payload.role,
+                timestamp: event.payload.timestamp,
+              });
+            } else {
+              updated.delete(event.payload.userId);
+            }
+            return updated;
+          });
           console.log(`[Real-time] User ${event.payload.status}:`, event.payload.userName);
           break;
 
         case 'MESSAGE_CREATED':
-          // Week 2: Handle new messages
+          // Add new message to chat
+          setMessages((prev) => [...prev, event.payload.message]);
           console.log(`[Real-time] New message from ${event.payload.message.userName}`);
           break;
 
         case 'UPLOAD_PROGRESS':
-          // Week 2: Handle upload progress indicators
+          // Update upload progress indicators
+          setUploadingUsers((prev) => {
+            const updated = new Map(prev);
+            if (event.payload.isUploading) {
+              updated.set(event.payload.userId, event.payload.userName || 'Unknown');
+            } else {
+              updated.delete(event.payload.userId);
+            }
+            return updated;
+          });
           console.log(`[Real-time] Upload progress:`, event.payload);
           break;
       }
@@ -342,6 +376,8 @@ export default function JobDetailsPage() {
       if (response.ok) {
         const data = await response.json();
         setJob(data.job);
+        // Load messages after job is loaded
+        loadMessages();
       } else {
         alert('Job not found');
         router.push('/dashboard');
@@ -350,6 +386,50 @@ export default function JobDetailsPage() {
       console.error('Failed to load job:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadMessages = async () => {
+    try {
+      const response = await fetch(`/api/jobs/${jobId}/messages`);
+      if (response.ok) {
+        const data = await response.json();
+        setMessages(data.messages.map((m: any) => ({
+          id: m.id,
+          content: m.content,
+          userId: m.userId,
+          userName: m.user.name || m.user.email || 'Unknown',
+          createdAt: m.createdAt,
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to load messages:', error);
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!newMessage.trim() || sendingMessage) return;
+
+    setSendingMessage(true);
+    try {
+      const response = await fetch(`/api/jobs/${jobId}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: newMessage.trim() }),
+      });
+
+      if (response.ok) {
+        setNewMessage(''); // Clear input on success
+        // Message will be added via WebSocket event
+      } else {
+        const error = await response.json();
+        alert(error.error || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      alert('Failed to send message');
+    } finally {
+      setSendingMessage(false);
     }
   };
 
@@ -513,6 +593,17 @@ export default function JobDetailsPage() {
     try {
       setUploading(true);
 
+      // Broadcast upload progress start
+      try {
+        await fetch(`/api/jobs/${jobId}/upload-progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isUploading: true }),
+        });
+      } catch (err) {
+        console.log('Failed to broadcast upload progress (non-fatal):', err);
+      }
+
       let thumbnailKey = null;
 
       // Upload thumbnail first if exists
@@ -641,9 +732,31 @@ export default function JobDetailsPage() {
       const isVideo = file.type.startsWith('video/');
       alert(`${isVideo ? 'Video' : 'Photo'} uploaded successfully! ✅`);
       await loadJob(); // Reload to show uploads
+
+      // Broadcast upload progress end (success)
+      try {
+        await fetch(`/api/jobs/${jobId}/upload-progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isUploading: false }),
+        });
+      } catch (err) {
+        console.log('Failed to broadcast upload progress end (non-fatal):', err);
+      }
     } catch (error) {
       console.error('Upload failed:', error);
       alert(`Upload failed: ${error instanceof Error ? error.message : 'Please try again.'}`);
+
+      // Broadcast upload progress end (failure)
+      try {
+        await fetch(`/api/jobs/${jobId}/upload-progress`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ isUploading: false }),
+        });
+      } catch (err) {
+        console.log('Failed to broadcast upload progress end (non-fatal):', err);
+      }
     } finally {
       setUploading(false);
     }
@@ -1303,27 +1416,41 @@ export default function JobDetailsPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {job.assignments.map((assignment) => (
-                    <div key={assignment.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-lg font-bold text-black">
-                          {assignment.helper.name?.[0] || assignment.helper.email[0].toUpperCase()}
-                        </span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{assignment.helper.name || 'Helper'}</p>
-                        <p className="text-sm text-gray-600 truncate">{assignment.helper.email}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className={`badge badge-${job.status.toLowerCase()} text-xs`}>
-                            {job.status}
-                          </span>
-                          <span className="text-xs text-gray-500">•</span>
-                          <span className="text-xs font-medium text-gold capitalize">
-                            {formatPrice(getPriceAmount(job.priceTier))} ({job.priceTier})
-                          </span>
+                  {job.assignments.map((assignment) => {
+                    const isOnline = onlineUsers.has(assignment.helper.id);
+                    return (
+                      <div key={assignment.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                        <div className="relative">
+                          <div className="w-12 h-12 bg-gold rounded-full flex items-center justify-center flex-shrink-0">
+                            <span className="text-lg font-bold text-black">
+                              {assignment.helper.name?.[0] || assignment.helper.email[0].toUpperCase()}
+                            </span>
+                          </div>
+                          {isOnline && (
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate">{assignment.helper.name || 'Helper'}</p>
+                            {isOnline && (
+                              <span className="text-xs text-green-600 font-medium">Online</span>
+                            )}
+                          </div>
+                          <p className="text-sm text-gray-600 truncate">{assignment.helper.email}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className={`badge badge-${job.status.toLowerCase()} text-xs`}>
+                              {job.status}
+                            </span>
+                            <span className="text-xs text-gray-500">•</span>
+                            <span className="text-xs font-medium text-gold capitalize">
+                              {formatPrice(getPriceAmount(job.priceTier))} ({job.priceTier})
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    );
+                  })}
                   ))}
                 </div>
               )}
@@ -1344,6 +1471,21 @@ export default function JobDetailsPage() {
                     <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
                     <span className="text-sm font-medium text-gold">{job.uploads.length} {job.uploads.length === 1 ? 'item' : 'items'} captured</span>
                   </div>
+
+                  {/* Upload Progress Indicators */}
+                  {uploadingUsers.size > 0 && (
+                    <div className="mt-4 space-y-2">
+                      {Array.from(uploadingUsers.entries()).map(([userId, userName]) => (
+                        <div key={userId} className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg">
+                          <svg className="w-4 h-4 text-blue-600 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span className="text-sm text-blue-700">{userName} is uploading...</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1516,6 +1658,76 @@ export default function JobDetailsPage() {
                 </div>
               </div>
             )}
+
+            {/* Chat Interface */}
+            <div className="card">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold">Chat</h3>
+                <span className="text-xs text-gray-500">
+                  {onlineUsers.size > 0 && `${onlineUsers.size} online`}
+                </span>
+              </div>
+
+              {/* Messages List */}
+              <div className="bg-gray-50 rounded-lg p-4 mb-4 max-h-96 overflow-y-auto space-y-3">
+                {messages.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <svg className="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <p className="text-sm">No messages yet</p>
+                    <p className="text-xs mt-1">Start a conversation</p>
+                  </div>
+                ) : (
+                  messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`${
+                        message.userId === currentUser?.id
+                          ? 'ml-4'
+                          : 'mr-4'
+                      }`}
+                    >
+                      <div
+                        className={`rounded-lg p-3 ${
+                          message.userId === currentUser?.id
+                            ? 'bg-gold bg-opacity-20 border border-gold'
+                            : 'bg-white border border-gray-200'
+                        }`}
+                      >
+                        <p className="text-xs font-medium text-gray-600 mb-1">
+                          {message.userId === currentUser?.id ? 'You' : message.userName}
+                        </p>
+                        <p className="text-sm break-words">{message.content}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(message.createdAt).toLocaleTimeString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Message Input */}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
+                  placeholder="Type a message..."
+                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gold text-sm"
+                  disabled={sendingMessage}
+                />
+                <button
+                  onClick={sendMessage}
+                  disabled={!newMessage.trim() || sendingMessage}
+                  className="btn btn-primary px-4 py-2 text-sm"
+                >
+                  {sendingMessage ? '...' : 'Send'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

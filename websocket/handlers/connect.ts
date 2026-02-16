@@ -54,8 +54,10 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 
     const userId = payload.sub!;
     const email = payload.email as string | undefined;
+    const name = payload.name as string | undefined;
+    const role = payload['custom:role'] as string | undefined;
 
-    console.log(`User authenticated: ${userId} (${email || 'no email'})`);
+    console.log(`User authenticated: ${userId} (${email || 'no email'}, role: ${role || 'unknown'})`);
 
     // Store connection with TTL (24 hours from now)
     const ttl = Math.floor(Date.now() / 1000) + 86400; // 24 hours
@@ -66,6 +68,8 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
         connectionId,
         userId,
         email,
+        name,
+        role,
         connectedAt: new Date().toISOString(),
         ttl, // DynamoDB will automatically delete expired connections
       },
