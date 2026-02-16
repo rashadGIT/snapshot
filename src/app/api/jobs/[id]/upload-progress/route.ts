@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { requireAuth, unauthorizedResponse, notFoundResponse, serverErrorResponse, badRequestResponse } from '@/lib/auth/middleware';
+import { requireRole, unauthorizedResponse, notFoundResponse, serverErrorResponse, badRequestResponse } from '@/lib/auth/middleware';
 import { prisma } from '@/lib/db/prisma';
 import { cookies } from 'next/headers';
 import { logger } from '@/lib/utils/logger';
@@ -40,7 +40,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   const authRequest = await getAuthRequest(request);
-  const user = await requireAuth(authRequest);
+  const user = await requireRole(authRequest, ['HELPER']);
 
   if (!user) {
     return unauthorizedResponse();
