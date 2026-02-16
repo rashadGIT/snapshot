@@ -73,21 +73,35 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
 
     async function fetchUrl() {
       try {
+        console.log('[SecureVideo] Fetching presigned URL for:', s3Key);
         const response = await fetch(`/api/uploads/download?s3Key=${encodeURIComponent(s3Key)}`, {
           credentials: 'include',
         });
 
         if (!response.ok) {
-          throw new Error('Failed to get download URL');
+          const errorText = await response.text();
+          console.error('[SecureVideo] Failed to get download URL:', {
+            status: response.status,
+            statusText: response.statusText,
+            error: errorText,
+            s3Key,
+          });
+          throw new Error(`Failed to get download URL: ${response.status}`);
         }
 
         const { url } = await response.json();
+        console.log('[SecureVideo] Presigned URL obtained:', {
+          s3Key,
+          urlLength: url?.length,
+          urlStart: url?.substring(0, 50),
+        });
 
         if (!cancelled) {
           setUrl(url);
           setLoading(false);
         }
-      } catch {
+      } catch (err) {
+        console.error('[SecureVideo] Error fetching video URL:', err);
         if (!cancelled) {
           setError(true);
           setLoading(false);
@@ -107,7 +121,13 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
   }
 
   if (error) {
-    return <div className={className} style={{ background: '#fee', color: '#c00', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Failed to load video</div>;
+    return (
+      <div className={className} style={{ background: '#fee', color: '#c00', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px', fontSize: '14px' }}>
+        <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Failed to load video</div>
+        <div style={{ fontSize: '12px', opacity: 0.8 }}>{s3Key}</div>
+        <div style={{ fontSize: '12px', marginTop: '8px' }}>Check browser console for details</div>
+      </div>
+    );
   }
 
   return (
@@ -120,7 +140,16 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
       playsInline
       preload="metadata"
       onError={(e) => {
-        console.error('Video playback error:', e);
+        const videoElement = e.currentTarget as HTMLVideoElement;
+        console.error('[SecureVideo] Video playback error:', {
+          s3Key,
+          url,
+          error: videoElement.error,
+          errorCode: videoElement.error?.code,
+          errorMessage: videoElement.error?.message,
+          networkState: videoElement.networkState,
+          readyState: videoElement.readyState,
+        });
         setError(true);
       }}
     >
@@ -495,8 +524,29 @@ export default function JobDetailsPage() {
   const startRecording = () => {
     if (!stream) return;
 
+    // Detect browser-supported video MIME types
+    // Safari/iOS supports MP4, Chrome/Firefox support WebM
+    let mimeType = 'video/webm';
+    let fileExtension = 'webm';
+
+    if (MediaRecorder.isTypeSupported('video/mp4')) {
+      mimeType = 'video/mp4';
+      fileExtension = 'mp4';
+    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
+      mimeType = 'video/webm;codecs=vp9';
+      fileExtension = 'webm';
+    } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
+      mimeType = 'video/webm;codecs=vp8';
+      fileExtension = 'webm';
+    } else if (MediaRecorder.isTypeSupported('video/webm')) {
+      mimeType = 'video/webm';
+      fileExtension = 'webm';
+    }
+
+    console.log('[Recording] Using MIME type:', mimeType);
+
     const recorder = new MediaRecorder(stream, {
-      mimeType: 'video/webm',
+      mimeType,
     });
 
     const chunks: Blob[] = [];
@@ -508,9 +558,15 @@ export default function JobDetailsPage() {
     };
 
     recorder.onstop = async () => {
-      const blob = new Blob(chunks, { type: 'video/webm' });
-      const fileName = `video-${Date.now()}.webm`;
-      const file = new File([blob], fileName, { type: 'video/webm' });
+      const blob = new Blob(chunks, { type: mimeType });
+      const fileName = `video-${Date.now()}.${fileExtension}`;
+      const file = new File([blob], fileName, { type: mimeType });
+
+      console.log('[Recording] Video recorded:', {
+        fileName,
+        mimeType,
+        size: file.size,
+      });
 
       // Generate thumbnail from video
       const thumbnail = await generateVideoThumbnail(blob);
