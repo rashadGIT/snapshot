@@ -151,12 +151,6 @@ model Upload {
   fileSize      Int       // Bytes
   thumbnailKey  String?   // S3 key for video thumbnail (optional)
 
-  // Converted format fields (for WebM→MP4 conversion)
-  convertedS3Key    String?   // S3 key for converted MP4 version
-  convertedFileType String?   // "video/mp4"
-  convertedFileSize Int?      // Size of converted file in bytes
-  convertedAt       DateTime? // Timestamp of conversion
-
   uploadedAt    DateTime  @default(now())
 
   job           Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -164,7 +158,6 @@ model Upload {
 
   @@index([jobId])
   @@index([uploadedBy])
-  @@index([fileType])  // Index for efficient queries by file type
   @@map("uploads")
 }
 

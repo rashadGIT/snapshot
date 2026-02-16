@@ -137,24 +137,12 @@ export async function GET(request: NextRequest) {
       }),
     });
 
-    // Prefer converted MP4 file for WebM videos (Safari/iOS compatibility)
-    const useConvertedFile = !!(upload.convertedS3Key && upload.fileType === 'video/webm');
-    const finalS3Key: string = useConvertedFile ? upload.convertedS3Key! : s3Key;
-    const contentType = useConvertedFile
-      ? (upload.convertedFileType || 'video/mp4')
-      : (upload.fileType || 'application/octet-stream');
+    const contentType = upload.fileType || 'application/octet-stream';
     const isVideo = contentType.startsWith('video/');
-
-    if (useConvertedFile) {
-      logger.debug('[Download] Using converted MP4 file:', {
-        original: s3Key,
-        converted: finalS3Key,
-      });
-    }
 
     const command = new GetObjectCommand({
       Bucket: config.bucket,
-      Key: finalS3Key,
+      Key: s3Key,
       // Set response headers to ensure proper browser handling
       ResponseContentType: contentType,
       ...(isVideo && {
