@@ -55,7 +55,7 @@ export async function GET(
       where: { id: jobId },
       include: {
         assignments: {
-          where: { userId: user.id },
+          where: { helperId: user.id },
         },
       },
     });
@@ -119,7 +119,7 @@ export async function POST(
       where: { id: jobId },
       include: {
         assignments: {
-          where: { userId: user.id },
+          where: { helperId: user.id },
         },
       },
     });
