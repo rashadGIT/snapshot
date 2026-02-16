@@ -137,9 +137,18 @@ export async function GET(request: NextRequest) {
       }),
     });
 
+    // Determine content type from upload record
+    const contentType = upload.fileType || 'application/octet-stream';
+    const isVideo = contentType.startsWith('video/');
+
     const command = new GetObjectCommand({
       Bucket: config.bucket,
       Key: s3Key,
+      // Set response headers to ensure proper browser handling
+      ResponseContentType: contentType,
+      ...(isVideo && {
+        ResponseContentDisposition: 'inline', // Display in browser, not download
+      }),
     });
 
     const url = await getSignedUrl(s3Client, command, {

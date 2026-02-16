@@ -66,6 +66,7 @@ function SecureImage({ s3Key, alt, className, onClick }: { s3Key: string; alt: s
 function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; className?: string; controls?: boolean; autoPlay?: boolean }) {
   const [url, setUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +89,7 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
         }
       } catch {
         if (!cancelled) {
+          setError(true);
           setLoading(false);
         }
       }
@@ -104,7 +106,27 @@ function SecureVideo({ s3Key, className, controls, autoPlay }: { s3Key: string; 
     return <div className={className} style={{ background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading video...</div>;
   }
 
-  return <video key={s3Key} src={url} className={className} controls={controls} autoPlay={autoPlay} />;
+  if (error) {
+    return <div className={className} style={{ background: '#fee', color: '#c00', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Failed to load video</div>;
+  }
+
+  return (
+    <video
+      key={s3Key}
+      src={url}
+      className={className}
+      controls={controls !== false}
+      autoPlay={autoPlay}
+      playsInline
+      preload="metadata"
+      onError={(e) => {
+        console.error('Video playback error:', e);
+        setError(true);
+      }}
+    >
+      Your browser does not support video playback.
+    </video>
+  );
 }
 
 interface Job {
