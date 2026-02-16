@@ -50,3 +50,5 @@ prisma/*.db-journal
 
 # AWS Credentials
 aws-credentials.txt
+
+secrets/

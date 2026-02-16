@@ -10,6 +10,7 @@ import { prisma } from '@/lib/db/prisma';
 import { recordUploadSchema } from '@/lib/validation/schemas';
 import { cookies } from 'next/headers';
 import { logger } from '@/lib/utils/logger';
+import { broadcastToJob } from '@/lib/websocket/broadcaster';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -68,9 +69,37 @@ export async function POST(
         fileSize: validated.fileSize,
         thumbnailKey: validated.thumbnailKey,
       },
+      include: {
+        uploader: {
+          select: { id: true, name: true },
+        },
+      },
     });
 
     logger.debug('[Upload API] Upload created:', upload.id);
+
+    // Broadcast UPLOAD_CREATED event to all connections in this job
+    try {
+      await broadcastToJob(jobId, {
+        type: 'UPLOAD_CREATED',
+        payload: {
+          jobId,
+          upload: {
+            id: upload.id,
+            s3Key: upload.s3Key,
+            fileName: upload.fileName,
+            fileType: upload.fileType,
+            fileSize: upload.fileSize,
+            uploadedAt: upload.uploadedAt.toISOString(),
+            uploadedBy: upload.uploader.name || 'Unknown',
+          },
+        },
+      });
+      logger.debug('[Upload API] WebSocket event broadcast successfully');
+    } catch (broadcastError) {
+      // Don't fail the request if WebSocket broadcast fails
+      logger.error('[Upload API] Failed to broadcast WebSocket event:', broadcastError);
+    }
 
     // Update job status to IN_PROGRESS if still ACCEPTED
     await prisma.job.updateMany({

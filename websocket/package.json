@@ -1,0 +1,35 @@
+{
+  "name": "snapspot-websocket",
+  "version": "1.0.0",
+  "description": "AWS Lambda handlers for Snapspot WebSocket real-time updates",
+  "main": "handlers/connect.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.700.0",
+    "@aws-sdk/client-dynamodb": "^3.700.0",
+    "@aws-sdk/lib-dynamodb": "^3.700.0",
+    "jose": "^5.9.6"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "keywords": [
+    "websocket",
+    "aws",
+    "lambda",
+    "real-time",
+    "snapspot"
+  ],
+  "author": "Snapspot Team",
+  "license": "UNLICENSED",
+  "private": true
+}

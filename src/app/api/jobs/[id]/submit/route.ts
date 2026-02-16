@@ -8,6 +8,7 @@ import { requireRole, unauthorizedResponse, notFoundResponse, badRequestResponse
 import { prisma } from '@/lib/db/prisma';
 import { cookies } from 'next/headers';
 import { logger } from '@/lib/utils/logger';
+import { broadcastToJob } from '@/lib/websocket/broadcaster';
 
 async function getAuthRequest(request: NextRequest): Promise<NextRequest> {
   const cookieStore = await cookies();
@@ -70,6 +71,22 @@ export async function POST(
         submittedAt: new Date(),
       },
     });
+
+    // Broadcast JOB_STATUS_CHANGED event to all connections in this job
+    try {
+      await broadcastToJob(jobId, {
+        type: 'JOB_STATUS_CHANGED',
+        payload: {
+          jobId,
+          status: 'IN_REVIEW',
+          submittedAt: updatedJob.submittedAt!.toISOString(),
+        },
+      });
+      logger.debug('[Submit API] WebSocket event broadcast successfully');
+    } catch (broadcastError) {
+      // Don't fail the request if WebSocket broadcast fails
+      logger.error('[Submit API] Failed to broadcast WebSocket event:', broadcastError);
+    }
 
     return Response.json({
       message: 'Job submitted for review',

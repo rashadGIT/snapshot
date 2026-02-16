@@ -9,6 +9,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import QRCode from 'qrcode';
 import { getPriceAmount, formatPrice } from '@/lib/pricing';
+import { useJobWebSocket } from '@/lib/websocket/useJobWebSocket';
 
 // Secure Image Component - fetches pre-signed URL before displaying
 function SecureImage({ s3Key, alt, className, onClick }: { s3Key: string; alt: string; className?: string; onClick?: () => void }) {
@@ -178,6 +179,64 @@ export default function JobDetailsPage() {
   const recordingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [viewerOpen, setViewerOpen] = useState(false);
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
+
+  // WebSocket connection for real-time updates
+  const { isConnected, connectionState } = useJobWebSocket({
+    jobId: job?.id || null,
+    onEvent: (event) => {
+      switch (event.type) {
+        case 'UPLOAD_CREATED':
+          // Add new upload to local state (optimistic update)
+          setJob((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              uploads: [...prev.uploads, {
+                id: event.payload.upload.id,
+                s3Key: event.payload.upload.s3Key,
+                s3Bucket: '', // Not included in event, will be fetched if needed
+                fileName: event.payload.upload.fileName,
+                fileType: event.payload.upload.fileType,
+                fileSize: event.payload.upload.fileSize,
+                uploadedAt: event.payload.upload.uploadedAt,
+              }],
+            };
+          });
+          console.log(`[Real-time] New ${event.payload.upload.fileType.startsWith('image') ? 'photo' : 'video'} uploaded by ${event.payload.upload.uploadedBy}`);
+          break;
+
+        case 'JOB_STATUS_CHANGED':
+          // Update job status in real-time
+          setJob((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              status: event.payload.status,
+              submittedAt: event.payload.submittedAt || prev.submittedAt,
+              completedAt: event.payload.completedAt || prev.completedAt,
+            };
+          });
+          console.log(`[Real-time] Job status changed to ${event.payload.status}`);
+          break;
+
+        case 'USER_PRESENCE':
+          // Week 2: Handle presence updates
+          console.log(`[Real-time] User ${event.payload.status}:`, event.payload.userName);
+          break;
+
+        case 'MESSAGE_CREATED':
+          // Week 2: Handle new messages
+          console.log(`[Real-time] New message from ${event.payload.message.userName}`);
+          break;
+
+        case 'UPLOAD_PROGRESS':
+          // Week 2: Handle upload progress indicators
+          console.log(`[Real-time] Upload progress:`, event.payload);
+          break;
+      }
+    },
+    debug: false, // Set to true for verbose WebSocket logging
+  });
 
   useEffect(() => {
     loadUserAndJob();
@@ -808,6 +867,26 @@ export default function JobDetailsPage() {
           </div>
         </header>
 
+        {/* WebSocket Connection Status Indicator */}
+        {isConnected && (
+          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+            Live
+          </div>
+        )}
+        {connectionState === 'connecting' && (
+          <div className="fixed bottom-4 right-4 bg-yellow-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            Connecting...
+          </div>
+        )}
+        {connectionState === 'error' && (
+          <div className="fixed bottom-4 right-4 bg-red-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+            <div className="w-2 h-2 bg-white rounded-full"></div>
+            Offline
+          </div>
+        )}
+
         <div className="container-safe py-8 max-w-2xl">
           {/* Upload Section - Hide after job is completed */}
           {job.status !== 'COMPLETED' && (
@@ -1124,6 +1203,26 @@ export default function JobDetailsPage() {
           </div>
         </div>
       </header>
+
+      {/* WebSocket Connection Status Indicator */}
+      {isConnected && (
+        <div className="fixed bottom-4 right-4 bg-green-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+          Live
+        </div>
+      )}
+      {connectionState === 'connecting' && (
+        <div className="fixed bottom-4 right-4 bg-yellow-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+          <div className="w-2 h-2 bg-white rounded-full"></div>
+          Connecting...
+        </div>
+      )}
+      {connectionState === 'error' && (
+        <div className="fixed bottom-4 right-4 bg-red-500 text-white px-3 py-2 rounded-full text-xs font-medium shadow-lg flex items-center gap-2 z-50">
+          <div className="w-2 h-2 bg-white rounded-full"></div>
+          Offline
+        </div>
+      )}
 
       <div className="container-safe py-8">
         <div className="grid lg:grid-cols-3 gap-6">
