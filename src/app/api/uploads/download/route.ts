@@ -137,13 +137,24 @@ export async function GET(request: NextRequest) {
       }),
     });
 
-    // Determine content type from upload record
-    const contentType = upload.fileType || 'application/octet-stream';
+    // Prefer converted MP4 file for WebM videos (Safari/iOS compatibility)
+    const useConvertedFile = upload.convertedS3Key && upload.fileType === 'video/webm';
+    const finalS3Key = useConvertedFile ? upload.convertedS3Key : s3Key;
+    const contentType = useConvertedFile
+      ? (upload.convertedFileType || 'video/mp4')
+      : (upload.fileType || 'application/octet-stream');
     const isVideo = contentType.startsWith('video/');
+
+    if (useConvertedFile) {
+      logger.debug('[Download] Using converted MP4 file:', {
+        original: s3Key,
+        converted: finalS3Key,
+      });
+    }
 
     const command = new GetObjectCommand({
       Bucket: config.bucket,
-      Key: s3Key,
+      Key: finalS3Key,
       // Set response headers to ensure proper browser handling
       ResponseContentType: contentType,
       ...(isVideo && {
