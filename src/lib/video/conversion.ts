@@ -6,7 +6,7 @@
  */
 
 import ffmpeg from 'fluent-ffmpeg';
-import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { Readable } from 'stream';
 import { getS3Client } from '../storage/s3';
 import { logger } from '../utils/logger';
@@ -58,7 +58,6 @@ export async function convertWebmToMp4(
 
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
-    let totalSize = 0;
     let timedOut = false;
 
     // Set timeout
@@ -116,7 +115,6 @@ export async function convertWebmToMp4(
         .pipe()
         .on('data', (chunk: Buffer) => {
           chunks.push(chunk);
-          totalSize += chunk.length;
         });
     } catch (error) {
       clearTimeout(timeoutId);
